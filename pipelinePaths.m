@@ -17,7 +17,7 @@ pp.CONDA        = 'C:\Users\westerja.VUDS\Anaconda3';
 pp.REPO         = 'C:\Users\westerja.VUDS\Documents\PreProcessorv2\intan2nwb\';
 pp.TBOXES       = 'C:\Users\westerja.VUDS\Documents\PreProcessorV2\';
 
-pp.SCRATCH      = 'D:\scratch';
+pp.SCRATCH      = 'D:\_BL_DATA_PIPELINE\scratch';
 
 % Varargin
 varStrInd = find(cellfun(@ischar,varargin));                        
