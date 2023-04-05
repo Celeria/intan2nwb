@@ -2,7 +2,7 @@ function pp = pipelinePaths(varargin)
 
 % Defaults
 pp.DATA_SOURCE  = '\\teba.psy.vanderbilt.edu\bastoslab\_BL_DATA_PIPELINE\_0_RAW_DATA';
-pp.DATA_DEST    = '\\teba.psy.vanderbilt.edu\bastoslab\_BL_DATA_PIPELINE\_6_NWB_DATA';
+pp.DATA_DEST    = '\\pit\ephys\_DATA\_BL_DATA_PIPELINE\';
 
 pp.RAW_DATA     = 'D:\_BL_DATA_PIPELINE\_0_RAW_DATA\';
 pp.CAT_DATA     = 'D:\_BL_DATA_PIPELINE\_1_CAT_DATA\';
