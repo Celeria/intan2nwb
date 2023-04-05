@@ -29,7 +29,7 @@ file_name = [out_file_path file_name];
 %There is a good chance your data is larger than your computer RAM, this is
 %just a good number where everything should fit in memory. If it still
 %doesn't work (highly unlikely), make this number smaller
-RAM_NUMBER_ADJUSTER = 4;
+RAM_NUMBER_ADJUSTER = 128;
 
 %This number keeps popping up, its the size in bytes, of an int16, the data
 %type we work with
@@ -104,7 +104,7 @@ else
         data_to_write_this_time = zeros(NUM_CHANNELS,data_chunk_length,'int16');
         %Skip over previously read data
         skip_amount = indices(data_chunks,1)*INT_16_SIZE-INT_16_SIZE;
-        for ii = 1:NUM_CHANNELS
+        parfor ii = 1:NUM_CHANNELS
             current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
             %Don't read data that's already been read
             fseek(current_fid,skip_amount,'bof');
