@@ -14,8 +14,8 @@ pp.NWB_DATA     = 'D:\_BL_DATA_PIPELINE\_6_NWB_DATA\';
 pp.EPO_DATA     = 'D:\_BL_DATA_PIPELINE\_7_EPO_DATA\';
 
 pp.CONDA        = 'C:\Users\westerja.VUDS\Anaconda3';
-pp.REPO         = 'C:\Users\westerja.VUDS\Documents\GitHub\intan2nwb\';
-pp.TBOXES       = 'C:\Users\westerja.VUDS\Documents\GitHub\';
+pp.REPO         = 'C:\Users\westerja.VUDS\Documents\PreProcessorv2\intan2nwb\';
+pp.TBOXES       = 'C:\Users\westerja.VUDS\Documents\PreProcessorV2\';
 
 pp.SCRATCH      = 'D:\scratch';
 
