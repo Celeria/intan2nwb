@@ -7,6 +7,8 @@ pp = pipelinePaths();
 
 % add toolboxes
 addpath(genpath(pp.TBOXES));
+addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\matnwb"));
+generateCore();
 
 %% Prepare slack
 if exist('SLACK_ID', 'var')
@@ -24,8 +26,8 @@ cd(old_dir);
 
 
 for ii = 1:length(nwb_file_list)
-    path_to_nwb = nwb_file_list(ii).folder;
-    nwb_name = nwb_file_list(ii).name;
+    path_to_nwb = string(nwb_file_list(ii).folder);
+    nwb_name = string(nwb_file_list(ii).name);
     nwb = nwbRead(path_to_nwb + nwb_name);
 
     %Send this text to slack
