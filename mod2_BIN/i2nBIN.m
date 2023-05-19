@@ -29,7 +29,9 @@ file_name = [out_file_path file_name];
 %There is a good chance your data is larger than your computer RAM, this is
 %just a good number where everything should fit in memory. If it still
 %doesn't work (highly unlikely), make this number smaller
-RAM_NUMBER_ADJUSTER = 128;
+RAM_NUMBER_ADJUSTER = 256;
+
+parpool(8);
 
 %This number keeps popping up, its the size in bytes, of an int16, the data
 %type we work with
@@ -132,6 +134,8 @@ else
     fclose(writtenFileID);
 
 end
+
+delete(gcp('nocreate'))
 
 if car_bin
     applyCAR2Dat([pp.BIN_DATA nwb.identifier filesep nwb.identifier '_probe-' num2str(probe_num) '.bin'], probe.num_channels);
