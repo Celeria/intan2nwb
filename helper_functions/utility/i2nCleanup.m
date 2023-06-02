@@ -1,11 +1,11 @@
 function i2nCleanup(pp, keepers)
 
 if nargin < 2
-    keepers = {'RAW', 'NWB'};
+    keepers = {'NWB'};
 end
 
-if (exist([pp.SCRATCH '\i2n_cleanup.bat'],'file'))
-    delete([pp.SCRATCH '\i2n_cleanup.bat']);
+if (exist([pp.SCRATCH 'i2n_cleanup.bat'],'file'))
+    delete([pp.SCRATCH 'i2n_cleanup.bat']);
 end
 
 % Cleanup
