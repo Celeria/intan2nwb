@@ -1,5 +1,5 @@
 %% Header
-%Takes the nwb generated, and
+%Takes all the NWB files currently on the preprocesser server and 
 
 function nwb_validation(SLACK_ID)
 %% pathing...can change to varargin or change function defaults for own machine
@@ -30,7 +30,7 @@ for ii = 1:length(nwb_file_list)
     nwb = nwbRead(path_to_nwb + nwb_name);
 
     %Send this text to slack
-    slack_text = string(nwb.identifier);
+    slack_text = "\nNWB DATA VALIDATION\n";
 
     %Print out passive glo specific information
     try
@@ -68,6 +68,14 @@ for ii = 1:length(nwb_file_list)
         slack_text = slack_text + sprintf("\n--> (4) GO sequence control : %d ", sum(a));
         b = nwb.intervals.get("passive_glo").vectordata.get("igo_seqctl").data(:) & nwb.intervals.get("passive_glo").vectordata.get("correct").data(:);
         slack_text = slack_text + sprintf("\n--> (4) iGO sequence control : %d \n", sum(b));
+
+        try
+        %Add the good unit count
+        slack_text = slack_text + sprintf("\nGood Units: %d",sum(nwb.units.vectordata.get('quality').data(:)));
+        catch
+        slack_text = slack_text + sprintf("\nNo units found ): \n");
+        end
+        
     catch
     end
 

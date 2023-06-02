@@ -318,6 +318,9 @@ for ii = to_proc
     n_procd = n_procd + 1;
     nwbExport(nwb, [pp.NWB_DATA nwb.identifier '.nwb']);
 
+    %Runs the validation function before cleanup
+    nwb_validation(SLACK_ID);
+
     % Cleanup
     i2nCleanup(pp, keepers);
 
