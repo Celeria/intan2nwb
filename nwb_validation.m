@@ -2,6 +2,9 @@
 %Takes all the NWB files currently on the preprocesser server and 
 
 function nwb_validation(SLACK_ID)
+
+fprintf("Running the Validation Function right now...")
+
 %% pathing...can change to varargin or change function defaults for own machine
 pp = pipelinePaths();
 
@@ -75,7 +78,7 @@ for ii = 1:length(nwb_file_list)
         catch
         slack_text = slack_text + sprintf("\nNo units found ): \n");
         end
-        
+
     catch
     end
 
