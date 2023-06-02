@@ -23,7 +23,7 @@
 
 function intan2nwb(ID, varargin)
 %% Defaults - need to ammend
-keepers                         = {};
+keepers                         = {'NWB'};
 skip_completed                  = true;
 this_ident                      = []; % used to specify specific session(s) with their ident
 
