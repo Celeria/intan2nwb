@@ -321,10 +321,6 @@ for ii = to_proc
     %Runs the validation function before cleanup
     nwb_validation(SLACK_ID);
 
-    % Cleanup
-    i2nCleanup(pp, keepers);
-
-
 end
 disp(['SUCCESSFULLY PROCESSED ' num2str(n_procd) ' FILES.'])
 end
