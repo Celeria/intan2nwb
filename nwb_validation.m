@@ -7,6 +7,7 @@ pp = pipelinePaths();
 
 % add toolboxes
 addpath(genpath(pp.TBOXES));
+addpath(genpath(pp.REPO));
 addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\matnwb"));
 generateCore();
 
