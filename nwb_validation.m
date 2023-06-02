@@ -33,7 +33,7 @@ for ii = 1:length(nwb_file_list)
     nwb = nwbRead(path_to_nwb + nwb_name);
 
     %Send this text to slack
-    slack_text = "\nNWB DATA VALIDATION\n";
+    slack_text = sprintf("\n NWB DATA VALIDATION \n");
 
     %Print out passive glo specific information
     try
