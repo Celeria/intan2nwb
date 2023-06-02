@@ -322,7 +322,7 @@ for ii = to_proc
     nwb_validation(SLACK_ID);
 
     % Cleanup
-    %i2nCleanup(pp, keepers);
+    i2nCleanup(pp, keepers);
 
 
 end
