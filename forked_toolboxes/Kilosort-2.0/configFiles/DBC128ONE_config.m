@@ -1,4 +1,4 @@
-ops.chanMap             = which('DBC128-1_kilosortChanMap.mat');
+ops.chanMap             = which('DBC128ONE_kilosortChanMap.mat');
 
 % frequency for high pass filtering (150)
 ops.fshigh = 150;   
