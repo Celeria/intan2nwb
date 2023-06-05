@@ -296,6 +296,17 @@ for ii = to_proc
                         ':robot_face:');
                 end
             catch
+                ttt = toc;
+
+                if send_slack_alerts
+                    SendSlackNotification( ...
+                        SLACK_ID, ...
+                        [nwb.identifier ': [' s2HMS(ttt) '] dev-' num2str(rd-1) 'Spike Sorting Failed'], ...
+                        'preprocess', ...
+                        'iJakebot', ...
+                        '', ...
+                        ':robot_face:');
+                end
                 warning('KS DIDNT PAN OUT!!!!!!')
             end
 
@@ -320,6 +331,9 @@ for ii = to_proc
 
     %Runs the validation function before cleanup
     nwb_validation(SLACK_ID);
+
+    %Cleanup function
+    i2nCleanup(pp,keepers);
 
 end
 disp(['SUCCESSFULLY PROCESSED ' num2str(n_procd) ' FILES.'])

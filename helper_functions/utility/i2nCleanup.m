@@ -10,7 +10,7 @@ end
 
 % Cleanup
 workers = feature('numcores');
-fid = fopen([pp.SCRATCH '\i2n_cleanup.bat'], 'w');
+fid = fopen([pp.SCRATCH 'i2n_cleanup.bat'], 'w');
 
 % % RAW DATA
 % if any(strcmp(keepers, 'RAW'))
