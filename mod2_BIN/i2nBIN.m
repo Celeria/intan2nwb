@@ -31,8 +31,6 @@ file_name = [out_file_path file_name];
 %doesn't work (highly unlikely), make this number smaller
 RAM_NUMBER_ADJUSTER = 256;
 
-parpool(8);
-
 %This number keeps popping up, its the size in bytes, of an int16, the data
 %type we work with
 INT_16_SIZE = 2;
@@ -53,7 +51,7 @@ try
     data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
     parfor (ii = 1:NUM_CHANNELS,8)
         current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
-        data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
+        data_to_write(ii,:) = fread(current_fid,num_samples,'int16=>int16');
         fclose(current_fid);
     end
 
@@ -129,7 +127,7 @@ catch
                 current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
                 %Don't read data that's already been read
                 fseek(current_fid,skip_amount,'bof');
-                data_to_write_this_time(ii,:) = fread(current_fid,data_chunk_length,'int16');
+                data_to_write_this_time(ii,:) = fread(current_fid,data_chunk_length,'int16=>int16');
                 fclose(current_fid);
             end
             %Write it to the binary file
@@ -145,7 +143,7 @@ catch
         parfor ii = 1:NUM_CHANNELS
             current_fid = fopen(string(in_file_path+"\amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
             fseek(current_fid,skip_amount,'bof');
-            data_to_write_this_time(ii,:) = fread(current_fid,last_data_chunk_length,'int16');
+            data_to_write_this_time(ii,:) = fread(current_fid,last_data_chunk_length,'int16=>int16');
             fclose(current_fid);
         end
         fwrite(writtenFileID,data_to_write_this_time,'int16');
