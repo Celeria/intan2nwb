@@ -23,7 +23,7 @@
 
 function intan2nwb(ID, varargin)
 %% Defaults - need to ammend
-keepers                         = {'NWB'};
+keepers                         = {};
 skip_completed                  = true;
 this_ident                      = []; % used to specify specific session(s) with their ident
 
@@ -296,17 +296,6 @@ for ii = to_proc
                         ':robot_face:');
                 end
             catch
-                ttt = toc;
-
-                if send_slack_alerts
-                    SendSlackNotification( ...
-                        SLACK_ID, ...
-                        [nwb.identifier ': [' s2HMS(ttt) '] dev-' num2str(rd-1) 'Spike Sorting Failed'], ...
-                        'preprocess', ...
-                        'iJakebot', ...
-                        '', ...
-                        ':robot_face:');
-                end
                 warning('KS DIDNT PAN OUT!!!!!!')
             end
 
@@ -329,11 +318,9 @@ for ii = to_proc
     n_procd = n_procd + 1;
     nwbExport(nwb, [pp.NWB_DATA nwb.identifier '.nwb']);
 
-    %Runs the validation function before cleanup
-    nwb_validation(SLACK_ID);
+    % Cleanup
+    i2nCleanup(pp, keepers);
 
-    %Cleanup function
-    i2nCleanup(pp,keepers);
 
 end
 disp(['SUCCESSFULLY PROCESSED ' num2str(n_procd) ' FILES.'])
