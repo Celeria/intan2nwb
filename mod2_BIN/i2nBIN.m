@@ -64,7 +64,7 @@ try
     'in_file_path', in_file_path, ...
     'port_letter', port_letter, ...
     'mfilename', file_name));
-    
+    fprintf(result);
 catch
     fprintf('\nPython code failed, using MATLAB version of the binarization code\n')
     if(slice_size > num_samples)
