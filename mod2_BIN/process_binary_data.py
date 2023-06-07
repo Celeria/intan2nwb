@@ -4,11 +4,13 @@ Created on Wed Jun  7 13:46:32 2023
 
 @author: Patrick, translated from MATLAB by chatgpt-4
 """
+    
 
 def process_binary_data(num_samples, slice_size, NUM_CHANNELS, INT_16_SIZE, in_file_path, port_letter, file_name):
     
-    import numpy as np
-    import os
+    try:
+    import os  
+    import numpy as np 
     
     indices = np.full((1000000, 2), np.nan)
     remaining_to_deal_with = num_samples
@@ -49,3 +51,6 @@ def process_binary_data(num_samples, slice_size, NUM_CHANNELS, INT_16_SIZE, in_f
                 data_to_write_this_time[ii, :] = np.fromfile(current_fid, dtype=np.int16, count=last_data_chunk_length)
         writtenFileID.write(data_to_write_this_time.tobytes())
         print("\nSuccessfully saved last of the data, processing complete")
+    except Exception as e:
+        return(str(e))
+#z = process_binary_data(a,b,c,d,e,f,g)
