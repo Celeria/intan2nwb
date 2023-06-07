@@ -46,7 +46,22 @@ num_samples = recdev.num_samples;
 
 try
     try
-        %First just try stuffing it all in the RAM for speed, and if it doesn't
+        fprintf('\nReading intan data files into tall array....\n')
+        data_to_write = tall(zeros(NUM_CHANNELS,num_samples,'int16'));
+        parfor (ii = 1:NUM_CHANNELS,8)
+            current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
+            data_to_write(ii,:) = fread(current_fid,num_samples,'int16=>int16');
+            fclose(current_fid);
+        end
+
+        delete(gcp('nocreate'))
+
+        fprintf('\nSaving binary data file...\n')
+        writtenFileID = fopen(file_name,'w');
+        fwrite(writtenFileID,gather(data_to_write),'int16');
+        fclose(writtenFileID);
+    catch
+        %Just try stuffing it all in the RAM for speed, and if it doesn't
         %work,
         fprintf('\nReading intan data files all into memory....\n')
         data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
@@ -61,21 +76,6 @@ try
         fprintf('\nSaving binary data file...\n')
         writtenFileID = fopen(file_name,'w');
         fwrite(writtenFileID,data_to_write,'int16');
-        fclose(writtenFileID);
-    catch
-        fprintf('\nReading intan data files into tall array....\n')
-        data_to_write = tall(zeros(NUM_CHANNELS,num_samples,'int16'));
-        parfor (ii = 1:NUM_CHANNELS,8)
-            current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
-            data_to_write(ii,:) = fread(current_fid,num_samples,'int16=>int16');
-            fclose(current_fid);
-        end
-
-        delete(gcp('nocreate'))
-
-        fprintf('\nSaving binary data file...\n')
-        writtenFileID = fopen(file_name,'w');
-        fwrite(writtenFileID,gather(data_to_write),'int16');
         fclose(writtenFileID);
     end
 
