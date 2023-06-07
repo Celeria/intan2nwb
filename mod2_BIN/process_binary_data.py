@@ -5,10 +5,11 @@ Created on Wed Jun  7 13:46:32 2023
 @author: Patrick, translated from MATLAB by chatgpt-4
 """
 
-import numpy as np
-import os
-
 def process_binary_data(num_samples, slice_size, NUM_CHANNELS, INT_16_SIZE, in_file_path, port_letter, file_name):
+    
+    import numpy as np
+    import os
+    
     indices = np.full((1000000, 2), np.nan)
     remaining_to_deal_with = num_samples
     indices[0, 0] = 0

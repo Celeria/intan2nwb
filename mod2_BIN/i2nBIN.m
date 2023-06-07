@@ -55,8 +55,7 @@ try
     fprintf('\nRunning Python Code to convert to binary\n')
 
     %Try to do the whole thing in Python first for speed
-    pyargs = py.list({num_samples, slice_size, NUM_CHANNELS, INT_16_SIZE, in_file_path, port_letter, file_name});
-    pyrunfile('process_binary_data.py',pyargs);
+    pyrunfile('process_binary_data.py num_samples, slice_size, NUM_CHANNELS, INT_16_SIZE, in_file_path, port_letter, file_name');
 catch
     fprintf('\nPython code failed, using MATLAB version of the binarization code\n')
     if(slice_size > num_samples)
