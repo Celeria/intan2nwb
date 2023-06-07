@@ -52,26 +52,26 @@ catch
 end
 
 try
-    fprintf('\nRunning Python Code to convert to binary\n')
-
-    %Try to do the whole thing in Python first for speed
-    binary_module = py.importlib.import_module('process_binary_data');
-    result = binary_module.process_binary_data(pyargs(...
-    'numsamples', num_samples, ...
-    'slice_size', slice_size, ...
-    'NUM_CHANNELS', NUM_CHANNELS, ...
-    'INT_16_SIZE', INT_16_SIZE, ...
-    'in_file_path', in_file_path, ...
-    'port_letter', port_letter, ...
-    'mfilename', file_name));
-    fprintf(result);
+%     fprintf('\nRunning Python Code to convert to binary\n')
+% 
+%     %Try to do the whole thing in Python first for speed
+%     binary_module = py.importlib.import_module('process_binary_data');
+%     result = binary_module.process_binary_data(pyargs(...
+%     'numsamples', num_samples, ...
+%     'slice_size', slice_size, ...
+%     'NUM_CHANNELS', NUM_CHANNELS, ...
+%     'INT_16_SIZE', INT_16_SIZE, ...
+%     'in_file_path', in_file_path, ...
+%     'port_letter', port_letter, ...
+%     'mfilename', file_name));
+%     fprintf(result);
 catch
     fprintf('\nPython code failed, using MATLAB version of the binarization code\n')
     if(slice_size > num_samples)
         %Everything fits in memory
         fprintf('\nReading intan data files....\n')
         data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
-        parfor ii = 1:NUM_CHANNELS
+        for ii = 1:NUM_CHANNELS
             current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
             data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
             fclose(current_fid);
@@ -119,7 +119,7 @@ catch
             data_to_write_this_time = zeros(NUM_CHANNELS,data_chunk_length,'int16');
             %Skip over previously read data
             skip_amount = indices(data_chunks,1)*INT_16_SIZE-INT_16_SIZE;
-            parfor ii = 1:NUM_CHANNELS
+            for ii = 1:NUM_CHANNELS
                 current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
                 %Don't read data that's already been read
                 fseek(current_fid,skip_amount,'bof');
@@ -136,7 +136,7 @@ catch
         last_data_chunk_length = length(indices(end,1):indices(end,2));
         data_to_write_this_time = zeros(NUM_CHANNELS,last_data_chunk_length,'int16');
         skip_amount = indices(end,1)*INT_16_SIZE-INT_16_SIZE;
-        parfor ii = 1:NUM_CHANNELS
+        for ii = 1:NUM_CHANNELS
             current_fid = fopen(string(in_file_path+"\amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
             fseek(current_fid,skip_amount,'bof');
             data_to_write_this_time(ii,:) = fread(current_fid,last_data_chunk_length,'int16=>int16');
