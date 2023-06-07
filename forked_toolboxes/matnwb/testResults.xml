@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<testsuites>
+  <testsuite errors="8" failures="0" name="tests.sanity.GenerationTest" skipped="0" tests="24" time="65.1553">
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.0.2]roundtripTest" time="4.0583">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=2.0.2]roundtripTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'MATLAB:noPublicFieldForClass'
+    --------------
+    Error Details:
+    --------------
+    Unrecognized property 'help' for class 'NwbFile'.
+    
+    Error in types.core/NWBContainer (line 22)
+    
+    Error in types.core/NWBFile (line 62)
+    
+    Error in NwbFile (line 16)
+                obj = obj@types.core.NWBFile(varargin{:});
+    
+    Error in tests.sanity.GenerationTest/roundtripTest (line 23)
+                expected = NwbFile('identifier', 'TEST',...</error>
+    </testcase>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.0.2]dynamicTableMethodsTest" time="2.8714">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=2.0.2]dynamicTableMethodsTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'NWB:CheckConstraint:InvalidType'
+    --------------
+    Error Details:
+    --------------
+    Error using types.util.checkConstraint
+    Property `vectordata.randomvalues` should be one of type(s) {types.core.VectorData}.
+    
+    Error in types.util.checkSet&gt;@(nm,val)types.util.checkConstraint(pname,nm,namedprops,constraints,val) (line 11)
+        @(nm, val)types.util.checkConstraint(pname, nm, namedprops, constraints, val));
+    
+    Error in types.untyped.Set/set (line 138)
+                        obj.fcn(name{i}, elem);
+    
+    Error in types.util.dynamictable.addRawData&gt;initVecData (line 84)
+        DynamicTable.vectordata.set(column, VecData);
+    
+    Error in types.util.dynamictable.addRawData (line 10)
+        initVecData(DynamicTable, column);
+    
+    Error in types.util.dynamictable.addVarargRow (line 41)
+        types.util.dynamictable.addRawData(DynamicTable, rn, rv);
+    
+    Error in types.util.dynamictable.addRow (line 45)
+        types.util.dynamictable.addVarargRow(DynamicTable, varargin{:});
+    
+    Error in types.core/DynamicTable/addRow (line 125)
+    
+    Error in tests.sanity.GenerationTest/dynamicTableMethodsTest (line 42)
+                    TimeIntervals.addRow(...</error>
+    </testcase>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.1.0]roundtripTest" time="6.0153"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.1.0]dynamicTableMethodsTest" time="2.2225">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=2.1.0]dynamicTableMethodsTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'NWB:CheckConstraint:InvalidType'
+    --------------
+    Error Details:
+    --------------
+    Error using types.util.checkConstraint
+    Property `vectordata.randomvalues` should be one of type(s) {types.core.VectorData}.
+    
+    Error in types.util.checkSet&gt;@(nm,val)types.util.checkConstraint(pname,nm,namedprops,constraints,val) (line 11)
+        @(nm, val)types.util.checkConstraint(pname, nm, namedprops, constraints, val));
+    
+    Error in types.untyped.Set/set (line 138)
+                        obj.fcn(name{i}, elem);
+    
+    Error in types.util.dynamictable.addRawData&gt;initVecData (line 84)
+        DynamicTable.vectordata.set(column, VecData);
+    
+    Error in types.util.dynamictable.addRawData (line 10)
+        initVecData(DynamicTable, column);
+    
+    Error in types.util.dynamictable.addVarargRow (line 41)
+        types.util.dynamictable.addRawData(DynamicTable, rn, rv);
+    
+    Error in types.util.dynamictable.addRow (line 45)
+        types.util.dynamictable.addVarargRow(DynamicTable, varargin{:});
+    
+    Error in types.core/DynamicTable/addRow (line 124)
+    
+    Error in tests.sanity.GenerationTest/dynamicTableMethodsTest (line 42)
+                    TimeIntervals.addRow(...</error>
+    </testcase>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.0]roundtripTest" time="3.8429"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.0]dynamicTableMethodsTest" time="2.5834">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=2.2.0]dynamicTableMethodsTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'MATLAB:class:RequireSuperClass'
+    --------------
+    Error Details:
+    --------------
+    The class 'types.hdmf_common.Index' is not a superclass of class 'types.hdmf_common.VectorIndex',
+    as required to invoke a superclass constructor or method.
+    
+    Error in types.hdmf_common/VectorIndex (line 9)
+    
+    Error in types.util.dynamictable.addVecInd (line 27)
+        VecIndex = types.hdmf_common.VectorIndex('target', vecView, 'data', (1:oldDataHeight) .');
+    
+    Error in types.util.dynamictable.addRawData (line 45)
+        indexChain{iVec} = types.util.dynamictable.addVecInd(DynamicTable, indexChain{end});
+    
+    Error in types.util.dynamictable.addVarargRow (line 41)
+        types.util.dynamictable.addRawData(DynamicTable, rn, rv);
+    
+    Error in types.util.dynamictable.addRow (line 45)
+        types.util.dynamictable.addVarargRow(DynamicTable, varargin{:});
+    
+    Error in types.hdmf_common.DynamicTable/addRow (line 111)
+            types.util.dynamictable.addRow(obj, varargin{:});
+    
+    Error in tests.sanity.GenerationTest/dynamicTableMethodsTest (line 42)
+                    TimeIntervals.addRow(...</error>
+    </testcase>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.1]roundtripTest" time="3.4811"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.1]dynamicTableMethodsTest" time="3.434"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.2]roundtripTest" time="3.4689"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.2]dynamicTableMethodsTest" time="2.5061"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.3]roundtripTest" time="3.2394"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.3]dynamicTableMethodsTest" time="2.6014"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.4]roundtripTest" time="3.2379"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.4]dynamicTableMethodsTest" time="2.5493"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.5]roundtripTest" time="3.1555"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.2.5]dynamicTableMethodsTest" time="2.531"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.3.0]roundtripTest" time="3.2787"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.3.0]dynamicTableMethodsTest" time="2.6492"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.4.0]roundtripTest" time="3.5191"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=2.4.0]dynamicTableMethodsTest" time="2.8508"/>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=core]roundtripTest" time="0.23432">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=core]roundtripTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'NWB:GenerateCore:MissingCoreSchema'
+    --------------
+    Error Details:
+    --------------
+    Error using assert
+    Cannot find suitable core namespace for schema version `core`
+    
+    Error in generateCore (line 46)
+    assert(2 == exist(corePath, 'file'),...
+    
+    Error in tests.sanity.GenerationTest/setupMethod (line 16)
+                generateCore(schemaVersion, 'savedir', '.');</error>
+    </testcase>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=core]dynamicTableMethodsTest" time="0.2467">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=core]dynamicTableMethodsTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'NWB:GenerateCore:MissingCoreSchema'
+    --------------
+    Error Details:
+    --------------
+    Error using assert
+    Cannot find suitable core namespace for schema version `core`
+    
+    Error in generateCore (line 46)
+    assert(2 == exist(corePath, 'file'),...
+    
+    Error in tests.sanity.GenerationTest/setupMethod (line 16)
+                generateCore(schemaVersion, 'savedir', '.');</error>
+    </testcase>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=hdmf-common-schema]roundtripTest" time="0.24597">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=hdmf-common-schema]roundtripTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'NWB:GenerateCore:MissingCoreSchema'
+    --------------
+    Error Details:
+    --------------
+    Error using assert
+    Cannot find suitable core namespace for schema version `hdmf-common-schema`
+    
+    Error in generateCore (line 46)
+    assert(2 == exist(corePath, 'file'),...
+    
+    Error in tests.sanity.GenerationTest/setupMethod (line 16)
+                generateCore(schemaVersion, 'savedir', '.');</error>
+    </testcase>
+    <testcase classname="tests.sanity.GenerationTest" name="[schemaVersion=hdmf-common-schema]dynamicTableMethodsTest" time="0.33224">
+      <error>Error occurred in tests.sanity.GenerationTest/[schemaVersion=hdmf-common-schema]dynamicTableMethodsTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'NWB:GenerateCore:MissingCoreSchema'
+    --------------
+    Error Details:
+    --------------
+    Error using assert
+    Cannot find suitable core namespace for schema version `hdmf-common-schema`
+    
+    Error in generateCore (line 46)
+    assert(2 == exist(corePath, 'file'),...
+    
+    Error in tests.sanity.GenerationTest/setupMethod (line 16)
+                generateCore(schemaVersion, 'savedir', '.');</error>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.system.AlignedSpikeTimesUtilityTest" skipped="0" tests="1" time="4.549">
+    <testcase classname="tests.system.AlignedSpikeTimesUtilityTest" name="psthTest" time="4.549"/>
+  </testsuite>
+  <testsuite errors="1" failures="0" name="tests.system.DynamicTableTest" skipped="0" tests="8" time="30.8995">
+    <testcase classname="tests.system.DynamicTableTest" name="testAmend" time="4.8433"/>
+    <testcase classname="tests.system.DynamicTableTest" name="testRoundTrip" time="4.0457"/>
+    <testcase classname="tests.system.DynamicTableTest" name="getRowTest" time="3.3942"/>
+    <testcase classname="tests.system.DynamicTableTest" name="getRowRoundtripTest" time="4.6677"/>
+    <testcase classname="tests.system.DynamicTableTest" name="ExpandableTableTest" time="3.0729">
+      <error>Error occurred in tests.system.DynamicTableTest/ExpandableTableTest and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'MATLAB:undefinedVarOrClass'
+    --------------
+    Error Details:
+    --------------
+    Unable to resolve the name 'DynamicFilter.empty'.
+    
+    Error in types.untyped.DataPipe (line 89)
+                p.addParameter('filters', DynamicFilter.empty(), ...
+    
+    Error in tests.system.DynamicTableTest/addExpandableDynamicTable (line 72)
+                    'data', types.untyped.DataPipe( ...
+    
+    Error in tests.system.DynamicTableTest/ExpandableTableTest (line 318)
+                testCase.addExpandableDynamicTable(testCase.file, ...</error>
+    </testcase>
+    <testcase classname="tests.system.DynamicTableTest" name="toTableTest" time="4.0446"/>
+    <testcase classname="tests.system.DynamicTableTest" name="DynamicTableCheckTest" time="3.5056"/>
+    <testcase classname="tests.system.DynamicTableTest" name="testEmptyTable" time="3.3255"/>
+  </testsuite>
+  <testsuite errors="0" failures="2" name="tests.system.ElectricalSeriesIOTest" skipped="0" tests="3" time="13.0537">
+    <testcase classname="tests.system.ElectricalSeriesIOTest" name="testRoundTrip" time="4.5984"/>
+    <testcase classname="tests.system.ElectricalSeriesIOTest" name="testOutToPyNWB" time="4.6578">
+      <failure type="VerificationFailure">Verification failed in tests.system.ElectricalSeriesIOTest/testOutToPyNWB.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testOutToPyNWB) at 15</failure>
+    </testcase>
+    <testcase classname="tests.system.ElectricalSeriesIOTest" name="testInFromPyNWB" time="3.7975">
+      <failure type="AssertionFailure">Assertion failed in tests.system.ElectricalSeriesIOTest/testInFromPyNWB and it did not run to completion.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testInFromPyNWB) at 22</failure>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="2" name="tests.system.ElectrodeGroupIOTest" skipped="0" tests="3" time="11.5995">
+    <testcase classname="tests.system.ElectrodeGroupIOTest" name="testRoundTrip" time="3.8233"/>
+    <testcase classname="tests.system.ElectrodeGroupIOTest" name="testOutToPyNWB" time="4.242">
+      <failure type="VerificationFailure">Verification failed in tests.system.ElectrodeGroupIOTest/testOutToPyNWB.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testOutToPyNWB) at 15</failure>
+    </testcase>
+    <testcase classname="tests.system.ElectrodeGroupIOTest" name="testInFromPyNWB" time="3.5342">
+      <failure type="AssertionFailure">Assertion failed in tests.system.ElectrodeGroupIOTest/testInFromPyNWB and it did not run to completion.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testInFromPyNWB) at 22</failure>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="2" name="tests.system.ImagingPlaneIOTest" skipped="0" tests="3" time="11.303">
+    <testcase classname="tests.system.ImagingPlaneIOTest" name="testRoundTrip" time="3.9206"/>
+    <testcase classname="tests.system.ImagingPlaneIOTest" name="testOutToPyNWB" time="3.69">
+      <failure type="VerificationFailure">Verification failed in tests.system.ImagingPlaneIOTest/testOutToPyNWB.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testOutToPyNWB) at 15</failure>
+    </testcase>
+    <testcase classname="tests.system.ImagingPlaneIOTest" name="testInFromPyNWB" time="3.6924">
+      <failure type="AssertionFailure">Assertion failed in tests.system.ImagingPlaneIOTest/testInFromPyNWB and it did not run to completion.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testInFromPyNWB) at 22</failure>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="2" name="tests.system.NWBFileIOTest" skipped="0" tests="3" time="11.6259">
+    <testcase classname="tests.system.NWBFileIOTest" name="testRoundTrip" time="4.3934"/>
+    <testcase classname="tests.system.NWBFileIOTest" name="testOutToPyNWB" time="3.6615">
+      <failure type="VerificationFailure">Verification failed in tests.system.NWBFileIOTest/testOutToPyNWB.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testOutToPyNWB) at 15</failure>
+    </testcase>
+    <testcase classname="tests.system.NWBFileIOTest" name="testInFromPyNWB" time="3.571">
+      <failure type="AssertionFailure">Assertion failed in tests.system.NWBFileIOTest/testInFromPyNWB and it did not run to completion.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testInFromPyNWB) at 22</failure>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="2" name="tests.system.PhotonSeriesIOTest" skipped="0" tests="4" time="15.9404">
+    <testcase classname="tests.system.PhotonSeriesIOTest" name="testAmend" time="4.5537"/>
+    <testcase classname="tests.system.PhotonSeriesIOTest" name="testRoundTrip" time="3.9568"/>
+    <testcase classname="tests.system.PhotonSeriesIOTest" name="testOutToPyNWB" time="3.7488">
+      <failure type="VerificationFailure">Verification failed in tests.system.PhotonSeriesIOTest/testOutToPyNWB.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testOutToPyNWB) at 15</failure>
+    </testcase>
+    <testcase classname="tests.system.PhotonSeriesIOTest" name="testInFromPyNWB" time="3.6811">
+      <failure type="AssertionFailure">Assertion failed in tests.system.PhotonSeriesIOTest/testInFromPyNWB and it did not run to completion.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testInFromPyNWB) at 22</failure>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="2" name="tests.system.TimeSeriesIOTest" skipped="0" tests="3" time="10.8926">
+    <testcase classname="tests.system.TimeSeriesIOTest" name="testRoundTrip" time="3.8834"/>
+    <testcase classname="tests.system.TimeSeriesIOTest" name="testOutToPyNWB" time="3.5481">
+      <failure type="VerificationFailure">Verification failed in tests.system.TimeSeriesIOTest/testOutToPyNWB.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testOutToPyNWB) at 15</failure>
+    </testcase>
+    <testcase classname="tests.system.TimeSeriesIOTest" name="testInFromPyNWB" time="3.4611">
+      <failure type="AssertionFailure">Assertion failed in tests.system.TimeSeriesIOTest/testInFromPyNWB and it did not run to completion.
+    ----------------
+    Test Diagnostic:
+    ----------------
+    E
+    ======================================================================
+    ERROR: PyNWBIOTest (unittest.loader._FailedTest)
+    ----------------------------------------------------------------------
+    ImportError: Failed to import test module: PyNWBIOTest
+    Traceback (most recent call last):
+      File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2544.0_x64__qbz5n2kfra8p0\lib\unittest\loader.py", line 154, in loadTestsFromName
+        module = __import__(module_name)
+      File "C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.py", line 4, in &lt;module&gt;
+        import numpy as np
+    ModuleNotFoundError: No module named 'numpy'
+    
+    
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.000s
+    
+    FAILED (errors=1)
+    
+    ------------------
+    Stack Information:
+    ------------------
+    In C:\Users\preprocess-server\Documents\GitHub\matnwb\+tests\+system\PyNWBIOTest.m (PyNWBIOTest.testInFromPyNWB) at 22</failure>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.system.UnitTimesIOTest" skipped="0" tests="1" time="4.0465">
+    <testcase classname="tests.system.UnitTimesIOTest" name="testRoundTrip" time="4.0465"/>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.system.smokeTest" skipped="0" tests="2" time="6.4119">
+    <testcase classname="tests.system.smokeTest" name="testSmokeInstantiateCore" time="2.7176"/>
+    <testcase classname="tests.system.smokeTest" name="testSmokeReadWrite" time="3.6943"/>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.unit.anonTest" skipped="0" tests="1" time="3.8775">
+    <testcase classname="tests.unit.anonTest" name="testAnonDataset" time="3.8775"/>
+  </testsuite>
+  <testsuite errors="2" failures="0" name="tests.unit.dataPipeTest" skipped="0" tests="2" time="5.2908">
+    <testcase classname="tests.unit.dataPipeTest" name="testIndex" time="2.6912">
+      <error>Error occurred in tests.unit.dataPipeTest/testIndex and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'MATLAB:undefinedVarOrClass'
+    --------------
+    Error Details:
+    --------------
+    Unable to resolve the name 'DynamicFilter.empty'.
+    
+    Error in types.untyped.DataPipe (line 89)
+                p.addParameter('filters', DynamicFilter.empty(), ...
+    
+    Error in tests.unit.dataPipeTest&gt;testIndex (line 21)
+    Pipe = types.untyped.DataPipe('data', data);</error>
+    </testcase>
+    <testcase classname="tests.unit.dataPipeTest" name="testAppend" time="2.5996">
+      <error>Error occurred in tests.unit.dataPipeTest/testAppend and it did not run to completion.
+    ---------
+    Error ID:
+    ---------
+    'MATLAB:undefinedVarOrClass'
+    --------------
+    Error Details:
+    --------------
+    Unable to resolve the name 'DynamicFilter.empty'.
+    
+    Error in types.untyped.DataPipe (line 89)
+                p.addParameter('filters', DynamicFilter.empty(), ...
+    
+    Error in tests.unit.dataPipeTest&gt;testAppend (line 37)
+    Pipe = types.untyped.DataPipe(...</error>
+    </testcase>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.unit.dataStubTest" skipped="0" tests="2" time="8.6274">
+    <testcase classname="tests.unit.dataStubTest" name="testRegionRead" time="3.8765"/>
+    <testcase classname="tests.unit.dataStubTest" name="testObjectCopy" time="4.7509"/>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.unit.linkTest" skipped="0" tests="6" time="16.1794">
+    <testcase classname="tests.unit.linkTest" name="testExternLinkConstructor" time="2.6004"/>
+    <testcase classname="tests.unit.linkTest" name="testSoftLinkConstructor" time="2.4176"/>
+    <testcase classname="tests.unit.linkTest" name="testLinkExportSoft" time="2.6012"/>
+    <testcase classname="tests.unit.linkTest" name="testLinkExportExternal" time="2.6127"/>
+    <testcase classname="tests.unit.linkTest" name="testSoftResolution" time="2.6376"/>
+    <testcase classname="tests.unit.linkTest" name="testExternalResolution" time="3.3099"/>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.unit.multipleShapesTest" skipped="0" tests="4" time="16.0344">
+    <testcase classname="tests.unit.multipleShapesTest" name="testMultipleShapesDataset" time="4.2815"/>
+    <testcase classname="tests.unit.multipleShapesTest" name="testNullShapeDataset" time="3.8818"/>
+    <testcase classname="tests.unit.multipleShapesTest" name="testMultipleNullShapesDataset" time="3.9353"/>
+    <testcase classname="tests.unit.multipleShapesTest" name="testInheritedDtypeDataset" time="3.9358"/>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.unit.regionViewTest" skipped="0" tests="1" time="11.706">
+    <testcase classname="tests.unit.regionViewTest" name="testRegionViewIo" time="11.706"/>
+  </testsuite>
+  <testsuite errors="0" failures="0" name="tests.unit.searchTest" skipped="0" tests="1" time="3.0789">
+    <testcase classname="tests.unit.searchTest" name="testSearch" time="3.0789"/>
+  </testsuite>
+</testsuites>
