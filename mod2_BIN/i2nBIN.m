@@ -44,49 +44,20 @@ end
 NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_letter));
 num_samples = recdev.num_samples;
 
+%Slice the file into more manageable pieces
 try
-    try
-        fprintf('\nReading intan data files into tall array....\n')
-        data_to_write = tall(zeros(NUM_CHANNELS,num_samples,'int16'));
-        parfor (ii = 1:NUM_CHANNELS,8)
-            current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
-            data_to_write(ii,:) = fread(current_fid,num_samples,'int16=>int16');
-            fclose(current_fid);
-        end
-
-        delete(gcp('nocreate'))
-
-        fprintf('\nSaving binary data file...\n')
-        writtenFileID = fopen(file_name,'w');
-        fwrite(writtenFileID,gather(data_to_write),'int16');
-        fclose(writtenFileID);
-    catch
-        %Just try stuffing it all in the RAM for speed, and if it doesn't
-        %work,
-        fprintf('\nReading intan data files all into memory....\n')
-        data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
-        parfor (ii = 1:NUM_CHANNELS,8)
-            current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
-            data_to_write(ii,:) = fread(current_fid,num_samples,'int16=>int16');
-            fclose(current_fid);
-        end
-
-        delete(gcp('nocreate'))
-
-        fprintf('\nSaving binary data file...\n')
-        writtenFileID = fopen(file_name,'w');
-        fwrite(writtenFileID,data_to_write,'int16');
-        fclose(writtenFileID);
-    end
-
+    slice_size = round(RAM_NUMBER_ADJUSTER * 10e9 / INT_16_SIZE / gcp().NumWorkers / NUM_CHANNELS/ 3);
 catch
-    %Slice up the data into more manageable pieces, so that large files will
-    %fit in RAM
-    try
-        slice_size = round(RAM_NUMBER_ADJUSTER * 10e9 / INT_16_SIZE / gcp().NumWorkers / NUM_CHANNELS/ 3);
-    catch
-        slice_size = round(RAM_NUMBER_ADJUSTER * 10e9 / INT_16_SIZE / NUM_CHANNELS/ 3);
-    end
+    slice_size = round(RAM_NUMBER_ADJUSTER * 10e9 / INT_16_SIZE / NUM_CHANNELS/ 3);
+end
+
+try
+    fprintf('\nRunning Python Code to convert to binary\n')
+
+    %Try to do the whole thing in Python first for speed
+    pyargs = py.list({num_samples, slice_size, NUM_CHANNELS, INT_16_SIZE, in_file_path, port_letter, file_name});
+    py.pyrunfile('process_binary_data.py',pyargs);
+catch
 
     if(slice_size > num_samples)
         %Everything fits in memory
