@@ -131,7 +131,7 @@ if ~exist([spk_file_path_itt filesep 'rez2.mat'], 'file') | respike_sort
             json_struct.mean_waveform_params.site_range = 16;
 
             json_struct.noise_waveform_params.classifier_path = ...
-                strrep([pp.REPO 'forked_toolboxes\ecephys_spike_sorting\modules\noise_templates\rf_classifier.pkl'], filesep, [filesep filesep]);
+                strrep([pp.REPO 'forked_toolboxes\ecephys_spike_sorting\ecephys_spike_sorting\modules\noise_templates\rf_classifier.pkl'], filesep, [filesep filesep]);
             json_struct.noise_waveform_params.multiprocessing_worker_count = 10;
 
             json_struct.quality_metrics_params.isi_threshold = 0.0015;
