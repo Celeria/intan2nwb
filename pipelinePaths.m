@@ -14,7 +14,7 @@ pp.NWB_DATA     = 'D:\_BL_DATA_PIPELINE\_6_NWB_DATA\';
 pp.EPO_DATA     = 'D:\_BL_DATA_PIPELINE\_7_EPO_DATA\';
 
 pp.CONDA        = 'C:\Users\westerja.VUDS\Anaconda3';
-pp.REPO         = 'C:\Users\preprocess-server\Documents\PreProcessorV2\';
+pp.REPO         = 'C:\Users\preprocess-server\Documents\GitHub\intan2nwb';
 pp.TBOXES       = 'C:\Users\preprocess-server\Documents\PreProcessorV2\forked_toolboxes';
 
 pp.SCRATCH      = 'D:\_BL_DATA_PIPELINE\_SCRATCH\';
