@@ -12,7 +12,7 @@ end
 
 if ~exist([spk_file_path_itt filesep 'rez2.mat'], 'file') | respike_sort
 
-    spike_sorting_incomplete = 0;
+    spike_sorting_incomplete = 1;
     itt_ctr = 0;
 
     while spike_sorting_incomplete
