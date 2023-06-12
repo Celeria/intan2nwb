@@ -9,8 +9,8 @@ fprintf("Running the Validation Function right now...")
 pp = pipelinePaths();
 
 % add toolboxes
-addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\matnwb"));
-generateCore();
+% addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\matnwb"));
+% generateCore();
 
 %% Prepare slack
 if exist('SLACK_ID', 'var')
@@ -21,7 +21,8 @@ end
 
 %% Loop through sessions
 old_dir = pwd;
-cd(pp.NWB_DATA);
+%cd(pp.NWB_DATA);
+cd('E:\');
 nwb_file_list = dir('*.nwb');
 cd(old_dir);
 
@@ -73,11 +74,174 @@ for ii = 1:length(nwb_file_list)
     catch
     end
 
+    %Print out receptive field information
+    try
+
+    catch
+    end
+
+    %Print out probe information
+    try
+        ProbeNames = unique(nwb.general_extracellular_ephys_electrodes.vectordata.get('probe').data(:));
+        numProbes = length(ProbeNames);
+        for p = 1:numProbes
+            slack_text = slack_text + sprintf("\nProbe %d: " + string(nwb.general_extracellular_ephys.get(ProbeNames{p}).location),p-1);
+        end
+    catch
+    end
+
     try
         %Add the good unit count
         slack_text = slack_text + sprintf("\nGood Units: %d",sum(nwb.units.vectordata.get('quality').data(:)));
     catch
         slack_text = slack_text + sprintf("\nNo units found ): \n");
+    end
+
+    if send_slack_alerts
+        SendSlackNotification( ...
+            SLACK_ID, ...
+            [char(slack_text)], ...
+            'nwb-validation', ...
+            'HumanErrorExterminator', ...
+            '', ...
+            ':credit_card:');
+    end
+
+    %Add some CSD based on flash task, written by Maxwell Lichtenfield
+    %     try
+    %         sampleRate = 1000;
+    %         preStim_time = 1000;
+    %         postStim_time = 1000;
+    %         flash_time_intervals = nwb.intervals.get('flash').start_time.data(:);
+    %         flash_dataVect = nwb.intervals.get('flash').vectordata.get('codes').data(:); dataVect(isnan(dataVect)) = 0;
+    %         flash_logical = find(nwb.intervals.get('flash').vectordata.get('correct').data(:) == 1);
+    %         flash_loexp_logical = find(flash_dataVect(flash_logical) == 100);
+    %         flash_time_intervals = nwb.intervals.get('flash').start_time.data(:);
+    %         flash_loexp_startimes = flash_time_intervals(flash_loexp_logical)*sampleRate;
+    %         if contains(probeInfo_A(1),'DBC')
+    %             csd_lfp_A =  zeros(128,(preStim_time+postStim_time+1),size(flash_loexp_startimes,1));
+    %             csd_lfp_B =  zeros(128,(preStim_time+postStim_time+1),size(flash_loexp_startimes,1));
+    %             csd_lfp_C =  zeros(128,(preStim_time+postStim_time+1),size(flash_loexp_startimes,1));
+    %         else
+    %             csd_lfp_A =  zeros(32,(preStim_time+postStim_time+1),size(flash_loexp_startimes,1));
+    %             csd_lfp_B =  zeros(32,(preStim_time+postStim_time+1),size(flash_loexp_startimes,1));
+    %             csd_lfp_C =  zeros(32,(preStim_time+postStim_time+1),size(flash_loexp_startimes,1));
+    %         end
+    %         for n = 1:size(flash_loexp_startimes,1)
+    %             csd_lfp_A(:,:,n) = nwb.acquisition.get('probe_0_lfp').electricalseries.get('probe_0_lfp_data').data(:,(flash_loexp_startimes(n)-preStim_time):(flash_loexp_startimes(n)+postStim_time));
+    %             if  NumProbes >= 2
+    %                 csd_lfp_B(:,:,n) = nwb.acquisition.get('probe_1_lfp').electricalseries.get('probe_1_lfp_data').data(:,(flash_loexp_startimes(n)-preStim_time):(flash_loexp_startimes(n)+postStim_time));
+    %             elseif NumProbes == 3
+    %                 csd_lfp_C(:,:,n) = nwb.acquisition.get('probe_2_lfp').electricalseries.get('probe_2_lfp_data').data(:,(flash_loexp_startimes(n)-preStim_time):(flash_loexp_startimes(n)+postStim_time));
+    %             end
+    %         end
+    %         test = 3;
+    %     catch
+    %     end
+
+    slack_text = "\n\n";
+    %Joule Receptive field map, written by Hamed Nejat
+    try
+        ProbeNames = unique(nwb.general_extracellular_ephys_electrodes.vectordata.get('probe').data(:));
+        numProbes = length(ProbeNames);
+        identifier_ = nwb.identifier;
+        for p = 1:length(numProbes)
+            ProbeAreas{p} = nwb.general_extracellular_ephys.get(ProbeNames{p}).location;
+
+            fprintf("\n-> %d Probes detected in %s\n-->This function will process only probe no.%d (%s)", numProbes, identifier_, p, ProbeAreas{p}{1});
+
+            start_times= nwb.intervals.get('rf_mapping_v2').start_time.data(:);
+            rf_info=nwb.intervals.get('rf_mapping_v2');
+            correct = rf_info.vectordata.get('correct').data(:);
+            x_position = rf_info.vectordata.get('x_position').data(:);
+            x_position_negative = rf_info.vectordata.get('x_position_negative').data(:);
+            y_position = rf_info.vectordata.get('y_position').data(:);
+            y_position_negative = rf_info.vectordata.get('y_position_negative').data(:);
+            sizes = rf_info.vectordata.get('size').data(:);
+            trials = rf_info.vectordata.get('trial_num').data(:);
+
+            indx_correct_trls_from_all_events = find(~isnan(x_position) & correct);
+            xpos = x_position;
+            ypos = y_position;
+            xnegs = find(x_position_negative);
+            ynegs = find(y_position_negative);
+
+            xpos(xnegs) = -xpos(xnegs);
+            ypos(ynegs) = -ypos(ynegs);
+
+            r = sizes;
+            r = r(indx_correct_trls_from_all_events);
+            xpos = xpos(indx_correct_trls_from_all_events);
+            ypos = ypos(indx_correct_trls_from_all_events);
+
+            conds = [xpos ypos r];
+            uniconds = unique(conds,'rows');
+            condindx = nan(1,size(conds,1));
+
+            for cond = 1:length(uniconds)
+                for c = 1:size(conds,1)
+                    if conds(c,:) == uniconds(cond,:)
+                        condindx(c)=cond;
+                    end
+                end
+            end
+
+            mua_name = ['probe_',num2str(p-1),'_muae'];
+            PD = nwb.acquisition.get('photodiode_1_tracking').timeseries.get('photodiode_1_tracking_data');
+            % PD_data = PD.data(:);
+            mua = nwb.acquisition.get(mua_name).electricalseries.get([mua_name,'_data']);
+            indx = nearest_index(mua.timestamps(:),start_times(indx_correct_trls_from_all_events));
+            resp = epoch_data(mua.data(:,:),indx,[200,200]);
+            resp = baseline_correct(resp, 1:400);
+
+            for chan = 1:size(resp, 1)
+
+                for cond = 1:length(uniconds)
+                    chanresp(cond) = squeeze(mean(resp(chan,[226+50:226+80],condindx==cond),[2,3]));
+                end
+
+                % chanresp(31) = 0;
+                even_indx = 1:size(resp, 1);
+                for cond = 1:length(uniconds)
+                    chanresp_grandavg(cond) = squeeze(mean(resp(even_indx,[230:300],condindx==cond),[1,2,3]));
+                end
+                %chanresp_grandavg = chanresp_grandavg./max(chanresp_grandavg);
+                chanresp_grandavg = zscore(chanresp_grandavg);
+                % chanresp_grandavg(31) = 0;
+
+                if mod(chan-1, 9) == 0
+                    figure("Position", [0 0 1800 1400]);
+                end
+
+                subplot(3, 3, mod(chan-1, 9)+1);
+                b = bubblechart(uniconds(:,1),uniconds(:,2),uniconds(:,3),chanresp);
+                bubblesize([4 27]);
+                colormap(gca,"jet");
+                % caxis([-3 3]);
+                colorbar;
+                title(num2str(chan));
+                set(gcf,'position',[50 50 1750 1350]);
+
+                fig_file_path = [pp.FIG_DATA nwb.identifier filesep];
+                file_name = [nwb.identifier '_RFMAParea-' ProbeAreas{p} chan '.png'];
+                saveas(gcf,fig_file_path+file_name);
+            end
+
+            unix = uniconds(:,1);
+            uniy = uniconds(:,2);
+
+            xu = unix;
+            yu = uniy;
+
+            figure("Position", [0 0 1800 1200]);
+            b = bubblechart(xu,yu,uniconds(:,3),chanresp_grandavg);
+            colormap(gca,"jet");
+            %caxis([0.7 1])
+            colorbar;
+            title("RF map for " + string(ProbeAreas{p}{1}));
+            set(gcf,'position',[100 100 1300 1300]);
+        end
+    catch
     end
 
     if send_slack_alerts

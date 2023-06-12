@@ -12,6 +12,7 @@ pp.SSC_DATA     = 'D:\_BL_DATA_PIPELINE\_4_SSC_DATA\';
 pp.CNX_DATA     = 'D:\_BL_DATA_PIPELINE\_5_CNX_DATA\';
 pp.NWB_DATA     = 'D:\_BL_DATA_PIPELINE\_6_NWB_DATA\';
 pp.EPO_DATA     = 'D:\_BL_DATA_PIPELINE\_7_EPO_DATA\';
+pp.FIG_DATA     = 'D:\_BL_DATA_PIPELINE\_9_FIG_DATA\';
 
 pp.CONDA        = 'C:\Users\preprocess-server\anaconda3';
 pp.REPO         = 'C:\Users\preprocess-server\Documents\GitHub\pipelinev2\';

@@ -21,7 +21,7 @@
 % 1. This version of the code requires having a google sheet with some
 % information pertaining to the recordings.
 
-function intan2nwb(ID, varargin)
+function intan2nwb(ID,IMAGE_TOKEN,varargin)
 %% Defaults - need to ammend
 keepers                         = {'NWB'};
 skip_completed                  = true;
@@ -329,7 +329,7 @@ for ii = to_proc
     nwbExport(nwb, [pp.NWB_DATA nwb.identifier '.nwb']);
 
     %Runs the nwb_validation at the end of every session
-    nwb_validation(SLACK_ID);
+    nwb_validation(SLACK_ID,IMAGE_TOKEN);
 
     % Cleanup
     %i2nCleanup(pp, keepers);
