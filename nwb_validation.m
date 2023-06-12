@@ -1,7 +1,7 @@
 %% Header
 %Takes all the NWB files currently on the preprocesser server and
 
-function nwb_validation(SLACK_ID)
+function nwb_validation(SLACK_ID,IMAGE_TOKEN)
 
 fprintf("Running the Validation Function right now...")
 
@@ -221,10 +221,6 @@ for ii = 1:length(nwb_file_list)
                 colorbar;
                 title(num2str(chan));
                 set(gcf,'position',[50 50 1750 1350]);
-
-                fig_file_path = [pp.FIG_DATA nwb.identifier filesep];
-                file_name = [nwb.identifier '_RFMAParea-' ProbeAreas{p} chan '.png'];
-                saveas(gcf,fig_file_path+file_name);
             end
 
             unix = uniconds(:,1);
@@ -240,6 +236,10 @@ for ii = 1:length(nwb_file_list)
             colorbar;
             title("RF map for " + string(ProbeAreas{p}{1}));
             set(gcf,'position',[100 100 1300 1300]);
+            fig_file_path = [pp.FIG_DATA nwb.identifier filesep];
+            file_name = [nwb.identifier '_RF_MAP_area-' ProbeAreas{p} '.png'];
+            saveas(gcf,fig_file_path+file_name);
+            pyrunfile('slack-uload.py',token=IMAGE_TOKEN,chan_name = 'nwb-validation',chart_path = fig_file_path+file_name);
         end
     catch
     end
