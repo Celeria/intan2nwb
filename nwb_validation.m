@@ -8,9 +8,9 @@ fprintf("Running the Validation Function right now...")
 %% pathing...can change to varargin or change function defaults for own machine
 pp = pipelinePaths();
 
-% add toolboxes
-% addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\matnwb"));
-% generateCore();
+%add toolboxes
+addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\matnwb"));
+generateCore();
 
 %% Prepare slack
 if exist('SLACK_ID', 'var')
