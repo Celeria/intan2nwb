@@ -21,8 +21,7 @@ end
 
 %% Loop through sessions
 old_dir = pwd;
-%cd(pp.NWB_DATA);
-cd('E:\');
+cd(pp.NWB_DATA);
 nwb_file_list = dir('*.nwb');
 cd(old_dir);
 
