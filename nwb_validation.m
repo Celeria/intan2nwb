@@ -10,6 +10,7 @@ pp = pipelinePaths();
 
 %add toolboxes
 addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\matnwb"));
+addpath(genpath("C:\Users\preprocess-server\Documents\GitHub\SlackMatlab"));
 generateCore();
 
 %% Prepare slack
