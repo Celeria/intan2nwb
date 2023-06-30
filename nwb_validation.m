@@ -32,7 +32,7 @@ for ii = 1:length(nwb_file_list)
     nwb = nwbRead(path_to_nwb + nwb_name);
 
     %Send this text to slack
-    slack_text = sprintf("\n\n");
+    slack_text = sprintf("\n> Session %s,", nwb.identifier);
 
     %Print out passive glo specific information
     try
@@ -44,7 +44,7 @@ for ii = 1:length(nwb_file_list)
         c = (nwb.intervals.get("passive_glo").vectordata.get("task_block_number").data(:) == 3) & nwb.intervals.get("passive_glo").vectordata.get("correct").data(:) & (nwb.intervals.get("passive_glo").vectordata.get("stimulus_number").data(:) == 5);
         d = (nwb.intervals.get("passive_glo").vectordata.get("task_block_number").data(:) == 4) & nwb.intervals.get("passive_glo").vectordata.get("correct").data(:) & (nwb.intervals.get("passive_glo").vectordata.get("stimulus_number").data(:) == 5);
 
-        slack_text = slack_text + sprintf("\n> Session %s\n\n->Total correct trials: %d\n", nwb.identifier, sum(a + b + c + d));
+        slack_text = slack_text + sprintf("\n\n->Total correct trials: %d\n", sum(a + b + c + d));
         slack_text = slack_text + sprintf("-> Habituation(1) = %d, Main(2) = %d, Random control(3) = %d, Sequence control(4) = %d \n", sum(a), sum(b), sum(c), sum(d));
         slack_text = slack_text + sprintf("\n--> (1) LO habituation : %d \n", sum(a));
 
