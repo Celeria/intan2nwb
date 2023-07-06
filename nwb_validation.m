@@ -29,10 +29,15 @@ cd(old_dir);
 for ii = 1:length(nwb_file_list)
     path_to_nwb = string(nwb_file_list(ii).folder) + "\";
     nwb_name = string(nwb_file_list(ii).name);
-    nwb = nwbRead(path_to_nwb + nwb_name);
+    
+    try
+        nwb = nwbRead(path_to_nwb + nwb_name);
+    catch
+        slack_text = "Could not open nwb file";
+    end
 
     %Send this text to slack
-    slack_text = sprintf("\n> Session %s,", nwb.identifier);
+    slack_text = sprintf("\n> Session %s\n", nwb.identifier);
 
     %Print out passive glo specific information
     try
@@ -70,6 +75,68 @@ for ii = 1:length(nwb_file_list)
         slack_text = slack_text + sprintf("\n--> (4) GO sequence control : %d ", sum(a));
         b = nwb.intervals.get("passive_glo").vectordata.get("igo_seqctl").data(:) & nwb.intervals.get("passive_glo").vectordata.get("correct").data(:);
         slack_text = slack_text + sprintf("\n--> (4) iGO sequence control : %d \n", sum(b));
+
+    catch
+    end
+
+    %Print out omission glo information
+    try
+        %Written by Hamed Nejat to count the trials in omission glo
+        blocks = nwb.intervals.get("omission_glo_passive").vectordata.get("task_block_number").data(:);
+        correct = nwb.intervals.get("omission_glo_passive").vectordata.get("correct").data(:);
+        omission = nwb.intervals.get("omission_glo_passive").vectordata.get("is_omission").data(:);
+        stims = nwb.intervals.get("omission_glo_passive").vectordata.get("stimulus_number").data(:);
+
+        b1 = (blocks == 1) & (correct == 1) & (stims == 3);
+
+        b2 = (blocks == 2) & (correct == 1) & (stims == 3);
+        b2l = (blocks == 2) & (correct == 1) & (isnan(omission)) & (stims == 3);
+        b2o2 = (blocks == 2) & (correct == 1) & (omission == 1) & (stims == 3);
+        b2o3 = (blocks == 2) & (correct == 1) & (omission == 1) & (stims == 4);
+        b2o4 = (blocks == 2) & (correct == 1) & (omission == 1) & (stims == 5);
+
+        b3 = (blocks == 3) & (correct == 1) & (stims == 3);
+
+        b4 = (blocks == 4) & (correct == 1) & (stims == 3);
+        b4l = (blocks == 4) & (correct == 1) & (isnan(omission)) & (stims == 3);
+        b4o2 = (blocks == 4) & (correct == 1) & (omission == 1) & (stims == 3);
+        b4o3 = (blocks == 4) & (correct == 1) & (omission == 1) & (stims == 4);
+        b4o4 = (blocks == 4) & (correct == 1) & (omission == 1) & (stims == 5);
+
+        b5 = (blocks == 5) & (correct == 1) & (stims == 3);
+        b5l = (blocks == 5) & (correct == 1) & (isnan(omission)) & (stims == 3);
+        b5o2 = (blocks == 5) & (correct == 1) & (omission == 1) & (stims == 3);
+        b5o3 = (blocks == 5) & (correct == 1) & (omission == 1) & (stims == 4);
+        b5o4 = (blocks == 5) & (correct == 1) & (omission == 1) & (stims == 5);
+
+        slack_text = slack_text + sprintf("\n->Total correct trials: %d\n", sum(b1 + b2 + b3 + b4 + b5));
+        slack_text = slack_text + sprintf("-> AAAB(1) = %d, XAAAB(2) = %d, BBBA(3) = %d, XBBBA(4) = %d, XRRRR(5) = %d \n", sum(b1), sum(b2), sum(b3), sum(b4), sum(b5));
+        slack_text = slack_text + sprintf("\n--> (1) AAAB habituation : %d \n", sum(b1));
+
+        slack_text = slack_text + sprintf("\n--> (2) AAAB omission. omission chance : %f \n", sum(b2o2 + b2o3 + b2o4)/sum(b2));
+        slack_text = slack_text + sprintf("\n--> (2) AAAB : %d \n", sum(b2l));
+        slack_text = slack_text + sprintf("\n--> (2) AXAB : %d \n", sum(b2o2));
+        slack_text = slack_text + sprintf("\n--> (2) AAXB : %d \n", sum(b2o3));
+        slack_text = slack_text + sprintf("\n--> (2) AAAX : %d \n", sum(b2o4));
+
+        slack_text = slack_text + sprintf("\n--> (3) BBBA habituation : %d \n", sum(b3));
+
+        slack_text = slack_text + sprintf("\n--> (4) BBBA omission. omission chance : %f \n", sum(b4o2 + b4o3 + b4o4)/sum(b4));
+        slack_text = slack_text + sprintf("\n--> (4) BBBA : %d \n", sum(b4l));
+        slack_text = slack_text + sprintf("\n--> (4) BXBA : %d \n", sum(b4o2));
+        slack_text = slack_text + sprintf("\n--> (4) BBXA : %d \n", sum(b4o3));
+        slack_text = slack_text + sprintf("\n--> (4) BBBX : %d \n", sum(b4o4));
+
+        slack_text = slack_text + sprintf("\n--> (5) RRRR omission. omission chance : %f \n", sum(b5o2 + b5o3 + b5o4)/sum(b5));
+        slack_text = slack_text + sprintf("\n--> (5) RRRR : %d \n", sum(b5l));
+        slack_text = slack_text + sprintf("\n--> (5) RXRR : %d \n", sum(b5o2));
+        slack_text = slack_text + sprintf("\n--> (5) RRXR : %d \n", sum(b5o3));
+        slack_text = slack_text + sprintf("\n--> (5) RRRX : %d \n", sum(b5o4));
+    catch
+    end
+
+    %Print out active glo information
+    try
 
     catch
     end
@@ -139,124 +206,124 @@ for ii = 1:length(nwb_file_list)
     %     catch
     %     end
 
-%     slack_text = "\n\n";
-%     %Joule Receptive field map, written by Hamed Nejat
-%     try
-%         ProbeNames = unique(nwb.general_extracellular_ephys_electrodes.vectordata.get('probe').data(:));
-%         numProbes = length(ProbeNames);
-%         identifier_ = nwb.identifier;
-%         for p = 1:length(numProbes)
-%             ProbeAreas{p} = nwb.general_extracellular_ephys.get(ProbeNames{p}).location;
-% 
-%             fprintf("\n-> %d Probes detected in %s\n-->This function will process only probe no.%d (%s)", numProbes, identifier_, p, ProbeAreas{p}{1});
-% 
-%             start_times= nwb.intervals.get('rf_mapping_v2').start_time.data(:);
-%             rf_info=nwb.intervals.get('rf_mapping_v2');
-%             correct = rf_info.vectordata.get('correct').data(:);
-%             x_position = rf_info.vectordata.get('x_position').data(:);
-%             x_position_negative = rf_info.vectordata.get('x_position_negative').data(:);
-%             y_position = rf_info.vectordata.get('y_position').data(:);
-%             y_position_negative = rf_info.vectordata.get('y_position_negative').data(:);
-%             sizes = rf_info.vectordata.get('size').data(:);
-%             trials = rf_info.vectordata.get('trial_num').data(:);
-% 
-%             indx_correct_trls_from_all_events = find(~isnan(x_position) & correct);
-%             xpos = x_position;
-%             ypos = y_position;
-%             xnegs = find(x_position_negative);
-%             ynegs = find(y_position_negative);
-% 
-%             xpos(xnegs) = -xpos(xnegs);
-%             ypos(ynegs) = -ypos(ynegs);
-% 
-%             r = sizes;
-%             r = r(indx_correct_trls_from_all_events);
-%             xpos = xpos(indx_correct_trls_from_all_events);
-%             ypos = ypos(indx_correct_trls_from_all_events);
-% 
-%             conds = [xpos ypos r];
-%             uniconds = unique(conds,'rows');
-%             condindx = nan(1,size(conds,1));
-% 
-%             for cond = 1:length(uniconds)
-%                 for c = 1:size(conds,1)
-%                     if conds(c,:) == uniconds(cond,:)
-%                         condindx(c)=cond;
-%                     end
-%                 end
-%             end
-% 
-%             mua_name = ['probe_',num2str(p-1),'_muae'];
-%             PD = nwb.acquisition.get('photodiode_1_tracking').timeseries.get('photodiode_1_tracking_data');
-%             % PD_data = PD.data(:);
-%             mua = nwb.acquisition.get(mua_name).electricalseries.get([mua_name,'_data']);
-%             indx = nearest_index(mua.timestamps(:),start_times(indx_correct_trls_from_all_events));
-%             resp = epoch_data(mua.data(:,:),indx,[200,200]);
-%             resp = baseline_correct(resp, 1:400);
-% 
-%             for chan = 1:size(resp, 1)
-% 
-%                 for cond = 1:length(uniconds)
-%                     chanresp(cond) = squeeze(mean(resp(chan,[226+50:226+80],condindx==cond),[2,3]));
-%                 end
-% 
-%                 % chanresp(31) = 0;
-%                 even_indx = 1:size(resp, 1);
-%                 for cond = 1:length(uniconds)
-%                     chanresp_grandavg(cond) = squeeze(mean(resp(even_indx,[230:300],condindx==cond),[1,2,3]));
-%                 end
-%                 %chanresp_grandavg = chanresp_grandavg./max(chanresp_grandavg);
-%                 chanresp_grandavg = zscore(chanresp_grandavg);
-%                 % chanresp_grandavg(31) = 0;
-% 
-%                 if mod(chan-1, 9) == 0
-%                     figure("Position", [0 0 1800 1400]);
-%                 end
-% 
-%                 subplot(3, 3, mod(chan-1, 9)+1);
-%                 b = bubblechart(uniconds(:,1),uniconds(:,2),uniconds(:,3),chanresp);
-%                 bubblesize([4 27]);
-%                 colormap(gca,"jet");
-%                 % caxis([-3 3]);
-%                 colorbar;
-%                 title(num2str(chan));
-%                 set(gcf,'position',[50 50 1750 1350]);
-%             end
-% 
-%             unix = uniconds(:,1);
-%             uniy = uniconds(:,2);
-% 
-%             xu = unix;
-%             yu = uniy;
-% 
-%             figure("Position", [0 0 1800 1200]);
-%             b = bubblechart(xu,yu,uniconds(:,3),chanresp_grandavg);
-%             colormap(gca,"jet");
-%             %caxis([0.7 1])
-%             colorbar;
-%             title("RF map for " + string(ProbeAreas{p}{p}));
-%             set(gcf,'position',[100 100 1300 1300]);
-%             fig_file_path = [pp.FIG_DATA nwb.identifier filesep];
-%             file_name = [nwb.identifier '_RF_MAP_area-' ProbeAreas{p}{p} '.png'];
-%             saveas(gcf,fig_file_path+file_name);
-%             pyrunfile('slack-uload.py',token=IMAGE_TOKEN,chan_name = 'nwb-validation',chart_path = fig_file_path+file_name);
-%         end
-%     catch
-%     end
-% 
-%     if send_slack_alerts
-%         SendSlackNotification( ...
-%             SLACK_ID, ...
-%             [char(slack_text)], ...
-%             'nwb-validation', ...
-%             'HumanErrorExterminator', ...
-%             '', ...
-%             ':credit_card:');
-%     end
-% 
-%     %Just to not rate limit in case there's a bunch of files that need
-%     %processing, pauses the code for 2 seconds
-%     pause(2)
+    %     slack_text = "\n\n";
+    %     %Joule Receptive field map, written by Hamed Nejat
+    %     try
+    %         ProbeNames = unique(nwb.general_extracellular_ephys_electrodes.vectordata.get('probe').data(:));
+    %         numProbes = length(ProbeNames);
+    %         identifier_ = nwb.identifier;
+    %         for p = 1:length(numProbes)
+    %             ProbeAreas{p} = nwb.general_extracellular_ephys.get(ProbeNames{p}).location;
+    %
+    %             fprintf("\n-> %d Probes detected in %s\n-->This function will process only probe no.%d (%s)", numProbes, identifier_, p, ProbeAreas{p}{1});
+    %
+    %             start_times= nwb.intervals.get('rf_mapping_v2').start_time.data(:);
+    %             rf_info=nwb.intervals.get('rf_mapping_v2');
+    %             correct = rf_info.vectordata.get('correct').data(:);
+    %             x_position = rf_info.vectordata.get('x_position').data(:);
+    %             x_position_negative = rf_info.vectordata.get('x_position_negative').data(:);
+    %             y_position = rf_info.vectordata.get('y_position').data(:);
+    %             y_position_negative = rf_info.vectordata.get('y_position_negative').data(:);
+    %             sizes = rf_info.vectordata.get('size').data(:);
+    %             trials = rf_info.vectordata.get('trial_num').data(:);
+    %
+    %             indx_correct_trls_from_all_events = find(~isnan(x_position) & correct);
+    %             xpos = x_position;
+    %             ypos = y_position;
+    %             xnegs = find(x_position_negative);
+    %             ynegs = find(y_position_negative);
+    %
+    %             xpos(xnegs) = -xpos(xnegs);
+    %             ypos(ynegs) = -ypos(ynegs);
+    %
+    %             r = sizes;
+    %             r = r(indx_correct_trls_from_all_events);
+    %             xpos = xpos(indx_correct_trls_from_all_events);
+    %             ypos = ypos(indx_correct_trls_from_all_events);
+    %
+    %             conds = [xpos ypos r];
+    %             uniconds = unique(conds,'rows');
+    %             condindx = nan(1,size(conds,1));
+    %
+    %             for cond = 1:length(uniconds)
+    %                 for c = 1:size(conds,1)
+    %                     if conds(c,:) == uniconds(cond,:)
+    %                         condindx(c)=cond;
+    %                     end
+    %                 end
+    %             end
+    %
+    %             mua_name = ['probe_',num2str(p-1),'_muae'];
+    %             PD = nwb.acquisition.get('photodiode_1_tracking').timeseries.get('photodiode_1_tracking_data');
+    %             % PD_data = PD.data(:);
+    %             mua = nwb.acquisition.get(mua_name).electricalseries.get([mua_name,'_data']);
+    %             indx = nearest_index(mua.timestamps(:),start_times(indx_correct_trls_from_all_events));
+    %             resp = epoch_data(mua.data(:,:),indx,[200,200]);
+    %             resp = baseline_correct(resp, 1:400);
+    %
+    %             for chan = 1:size(resp, 1)
+    %
+    %                 for cond = 1:length(uniconds)
+    %                     chanresp(cond) = squeeze(mean(resp(chan,[226+50:226+80],condindx==cond),[2,3]));
+    %                 end
+    %
+    %                 % chanresp(31) = 0;
+    %                 even_indx = 1:size(resp, 1);
+    %                 for cond = 1:length(uniconds)
+    %                     chanresp_grandavg(cond) = squeeze(mean(resp(even_indx,[230:300],condindx==cond),[1,2,3]));
+    %                 end
+    %                 %chanresp_grandavg = chanresp_grandavg./max(chanresp_grandavg);
+    %                 chanresp_grandavg = zscore(chanresp_grandavg);
+    %                 % chanresp_grandavg(31) = 0;
+    %
+    %                 if mod(chan-1, 9) == 0
+    %                     figure("Position", [0 0 1800 1400]);
+    %                 end
+    %
+    %                 subplot(3, 3, mod(chan-1, 9)+1);
+    %                 b = bubblechart(uniconds(:,1),uniconds(:,2),uniconds(:,3),chanresp);
+    %                 bubblesize([4 27]);
+    %                 colormap(gca,"jet");
+    %                 % caxis([-3 3]);
+    %                 colorbar;
+    %                 title(num2str(chan));
+    %                 set(gcf,'position',[50 50 1750 1350]);
+    %             end
+    %
+    %             unix = uniconds(:,1);
+    %             uniy = uniconds(:,2);
+    %
+    %             xu = unix;
+    %             yu = uniy;
+    %
+    %             figure("Position", [0 0 1800 1200]);
+    %             b = bubblechart(xu,yu,uniconds(:,3),chanresp_grandavg);
+    %             colormap(gca,"jet");
+    %             %caxis([0.7 1])
+    %             colorbar;
+    %             title("RF map for " + string(ProbeAreas{p}{p}));
+    %             set(gcf,'position',[100 100 1300 1300]);
+    %             fig_file_path = [pp.FIG_DATA nwb.identifier filesep];
+    %             file_name = [nwb.identifier '_RF_MAP_area-' ProbeAreas{p}{p} '.png'];
+    %             saveas(gcf,fig_file_path+file_name);
+    %             pyrunfile('slack-uload.py',token=IMAGE_TOKEN,chan_name = 'nwb-validation',chart_path = fig_file_path+file_name);
+    %         end
+    %     catch
+    %     end
+    %
+    %     if send_slack_alerts
+    %         SendSlackNotification( ...
+    %             SLACK_ID, ...
+    %             [char(slack_text)], ...
+    %             'nwb-validation', ...
+    %             'HumanErrorExterminator', ...
+    %             '', ...
+    %             ':credit_card:');
+    %     end
+    %
+    %     %Just to not rate limit in case there's a bunch of files that need
+    %     %processing, pauses the code for 2 seconds
+    %     pause(2)
 
 end
 
