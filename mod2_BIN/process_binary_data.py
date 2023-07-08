@@ -4,12 +4,11 @@ Created on Wed Jun  7 13:46:32 2023
 
 @author: Patrick, translated from MATLAB by chatgpt-4
 """
-
-import numpy as np
-import os
-import sys
-
 def process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name, chunk_size=10000000):
+    import numpy as np
+    import os
+    import sys
+    
     try:
         # try with original method first
         data_to_write = np.zeros((NUM_CHANNELS, num_samples), dtype=np.int16)

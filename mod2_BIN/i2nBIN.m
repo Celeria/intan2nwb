@@ -26,15 +26,6 @@ port_letter = probe.port;
 %do the rest
 file_name = [out_file_path file_name];
 
-%There is a good chance your data is larger than your computer RAM, this is
-%just a good number where everything should fit in memory. If it still
-%doesn't work (highly unlikely), make this number smaller
-RAM_NUMBER_ADJUSTER = 256;
-
-%This number keeps popping up, its the size in bytes, of an int16, the data
-%type we work with
-INT_16_SIZE = 2;
-
 %If you are doing this again, and the old file exists, things get messed
 %up, so delete the old file before messing with it
 if (exist(file_name,'file'))
@@ -43,13 +34,6 @@ end
 
 NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_letter));
 num_samples = recdev.num_samples;
-
-%Slice the file into more manageable pieces
-try
-    slice_size = round(RAM_NUMBER_ADJUSTER * 10e9 / INT_16_SIZE / gcp().NumWorkers / NUM_CHANNELS/ 3);
-catch
-    slice_size = round(RAM_NUMBER_ADJUSTER * 10e9 / INT_16_SIZE / NUM_CHANNELS/ 3);
-end
 
 % Import the Python module
 mod = py.importlib.import_module('process_binary_data');
