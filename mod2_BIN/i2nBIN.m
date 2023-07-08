@@ -37,7 +37,7 @@ num_samples = recdev.num_samples;
 
 % Call the Python function
 fprintf('\nTrying python version of the process\n');
-py.process_binary_data.process_binary_data(py.int(NUM_CHANNELS), py.int(num_samples), py.str(in_file_path), py.str(port_letter), py.str(file_name));
+py.process_binary_data.process_binary_files(py.int(NUM_CHANNELS), py.int(num_samples), py.str(in_file_path), py.str(port_letter), py.str(file_name));
 
 % if(slice_size > num_samples)
 %     %Everything fits in memory
