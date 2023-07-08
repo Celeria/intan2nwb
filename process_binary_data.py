@@ -16,5 +16,4 @@ def process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, fi
                 with open(os.path.join(in_file_path, f"amp-{port_letter.upper()}-{ii:03}.dat"), 'rb') as current_fid:
                     current_fid.seek(i * np.dtype(np.int16).itemsize)  # skip to the correct position
                     data_to_write[ii, :min(chunk_size, num_samples - i)] = np.fromfile(current_fid, dtype=np.int16, count=min(chunk_size, num_samples - i))
-            for ii in range(NUM_CHANNELS):
-                writtenFileID.write(data_to_write[ii, :].tobytes())
+            writtenFileID.write(data_to_write.T.tobytes())
