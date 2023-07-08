@@ -39,7 +39,7 @@ num_samples = recdev.num_samples;
 mod = py.importlib.import_module('process_binary_data');
 
 % Call the Python function
-mod.read_write_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
+mod.process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
 
 % if(slice_size > num_samples)
 %     %Everything fits in memory
