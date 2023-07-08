@@ -36,7 +36,7 @@ NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_
 num_samples = recdev.num_samples;
 
 % Import the Python module
-mod = py.importlib.import_module('process_binary_data');
+mod = py.importlib.import_module('process_binary_data.py');
 
 % Call the Python function
 fprintf('\nTrying python version of the process')
