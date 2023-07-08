@@ -36,11 +36,11 @@ NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_
 num_samples = recdev.num_samples;
 
 % Import the Python module
-mod = py.importlib.import_module('process_binary_data.py');
+write_binary_mod = py.importlib.import_module('process_binary_data');
 
 % Call the Python function
 fprintf('\nTrying python version of the process')
-mod.process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
+write_binary_mod.process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
 
 % if(slice_size > num_samples)
 %     %Everything fits in memory
