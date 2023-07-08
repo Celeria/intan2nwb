@@ -6,6 +6,7 @@ Created on Wed Jun  7 13:46:32 2023
 """
 
 def process_binary_files(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name):
+
     import numpy as np
     from concurrent.futures import ProcessPoolExecutor
     import os
@@ -20,4 +21,5 @@ def process_binary_files(NUM_CHANNELS, num_samples, in_file_path, port_letter, f
         for ii, data in enumerate(executor.map(read_data, range(NUM_CHANNELS)), 1):
             data_to_write[ii-1, :] = data
 
-    data_to_write.tofile(file_name)
+    # Transpose the data to match MATLAB's column-major order
+    data_to_write.T.tofile(file_name)
