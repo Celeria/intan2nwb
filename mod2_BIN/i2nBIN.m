@@ -51,101 +51,92 @@ catch
     slice_size = round(RAM_NUMBER_ADJUSTER * 10e9 / INT_16_SIZE / NUM_CHANNELS/ 3);
 end
 
+% Import the Python module
+mod = py.importlib.import_module('process_binary_data');
 
-%     fprintf('\nRunning Python Code to convert to binary\n')
+% Call the Python function
+mod.read_write_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
+
+% if(slice_size > num_samples)
+%     %Everything fits in memory
+%     fprintf('\nReading intan data files....\n')
+%     data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
+%     parfor ii = 1:NUM_CHANNELS
+%         current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
+%         data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
+%         fclose(current_fid);
+%     end
 % 
-%     %Try to do the whole thing in Python first for speed
-%     binary_module = py.importlib.import_module('process_binary_data');
-%     result = binary_module.process_binary_data(pyargs(...
-%     'numsamples', num_samples, ...
-%     'slice_size', slice_size, ...
-%     'NUM_CHANNELS', NUM_CHANNELS, ...
-%     'INT_16_SIZE', INT_16_SIZE, ...
-%     'in_file_path', in_file_path, ...
-%     'port_letter', port_letter, ...
-%     'mfilename', file_name));
-%     fprintf(result);
-
-if(slice_size > num_samples)
-    %Everything fits in memory
-    fprintf('\nReading intan data files....\n')
-    data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
-    parfor ii = 1:NUM_CHANNELS
-        current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
-        data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
-        fclose(current_fid);
-    end
-
-    fprintf('\nSaving binary data file...\n')
-    writtenFileID = fopen(file_name,'w');
-    fwrite(writtenFileID,data_to_write,'int16');
-    fclose(writtenFileID);
-
-else
-    fprintf('\nData won''t fit in memory, optimizing....\n')
-
-    %Can't fit it all in memory, something tricker needs to happen
-    %The structure that's explains where to start reading data each time
-    indices = nan(1000000,2);
-    remaining_to_deal_with = num_samples;
-    indices(1,1) = 1;
-    indices(1,2) = slice_size;
-    indices_counter = 2;
-    remaining_to_deal_with = remaining_to_deal_with - slice_size;
-    previous_end = slice_size;
-    while remaining_to_deal_with > slice_size
-        indices(indices_counter,1) = previous_end + 1;
-        previous_end = previous_end + 1;
-        indices(indices_counter,2) = previous_end + slice_size;
-        previous_end = previous_end + slice_size;
-        remaining_to_deal_with = remaining_to_deal_with - slice_size - 1;
-        indices_counter = indices_counter + 1;
-    end
-    indices(indices_counter,1) = previous_end + 1;
-    indices(indices_counter,2) = num_samples;
-    %The array was arbitrarily large just in case, but this trims it to the
-    %exact size necessary
-    indices = rmmissing(indices);
-
-    %Break the files into different time blocks, size dependant on how much
-    %system RAM you have available, the more, the faster
-    writtenFileID = fopen(file_name,'w');
-    for data_chunks = 1:height(indices)-1
-
-        %How much data can be fit into memory at once
-        data_chunk_length = length(indices(data_chunks,1):indices(data_chunks,2));
-        %Store it here temporarily
-        data_to_write_this_time = zeros(NUM_CHANNELS,data_chunk_length,'int16');
-        %Skip over previously read data
-        skip_amount = indices(data_chunks,1)*INT_16_SIZE-INT_16_SIZE;
-        for ii = 1:NUM_CHANNELS
-            current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
-            %Don't read data that's already been read
-            fseek(current_fid,skip_amount,'bof');
-            data_to_write_this_time(ii,:) = fread(current_fid,data_chunk_length,'int16=>int16');
-            fclose(current_fid);
-        end
-        %Write it to the binary file
-        fwrite(writtenFileID,data_to_write_this_time,'int16');
-        fprintf('\nSuccessfully saved %d percent of the data\n',round(data_chunks/height(indices)*100))
-
-    end
-
-    %Deal with the last bit of the data
-    last_data_chunk_length = length(indices(end,1):indices(end,2));
-    data_to_write_this_time = zeros(NUM_CHANNELS,last_data_chunk_length,'int16');
-    skip_amount = indices(end,1)*INT_16_SIZE-INT_16_SIZE;
-    for ii = 1:NUM_CHANNELS
-        current_fid = fopen(string(in_file_path+"\amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
-        fseek(current_fid,skip_amount,'bof');
-        data_to_write_this_time(ii,:) = fread(current_fid,last_data_chunk_length,'int16=>int16');
-        fclose(current_fid);
-    end
-    fwrite(writtenFileID,data_to_write_this_time,'int16');
-    fprintf('\nSuccessfully saved last of the data, processing complete\n')
-    fclose(writtenFileID);
-
-end
+%     fprintf('\nSaving binary data file...\n')
+%     writtenFileID = fopen(file_name,'w');
+%     fwrite(writtenFileID,data_to_write,'int16');
+%     fclose(writtenFileID);
+% 
+% else
+%     fprintf('\nData won''t fit in memory, optimizing....\n')
+% 
+%     %Can't fit it all in memory, something tricker needs to happen
+%     %The structure that's explains where to start reading data each time
+%     indices = nan(1000000,2);
+%     remaining_to_deal_with = num_samples;
+%     indices(1,1) = 1;
+%     indices(1,2) = slice_size;
+%     indices_counter = 2;
+%     remaining_to_deal_with = remaining_to_deal_with - slice_size;
+%     previous_end = slice_size;
+%     while remaining_to_deal_with > slice_size
+%         indices(indices_counter,1) = previous_end + 1;
+%         previous_end = previous_end + 1;
+%         indices(indices_counter,2) = previous_end + slice_size;
+%         previous_end = previous_end + slice_size;
+%         remaining_to_deal_with = remaining_to_deal_with - slice_size - 1;
+%         indices_counter = indices_counter + 1;
+%     end
+%     indices(indices_counter,1) = previous_end + 1;
+%     indices(indices_counter,2) = num_samples;
+%     %The array was arbitrarily large just in case, but this trims it to the
+%     %exact size necessary
+%     indices = rmmissing(indices);
+% 
+%     %Break the files into different time blocks, size dependant on how much
+%     %system RAM you have available, the more, the faster
+%     writtenFileID = fopen(file_name,'w');
+%     for data_chunks = 1:height(indices)-1
+% 
+%         %How much data can be fit into memory at once
+%         data_chunk_length = length(indices(data_chunks,1):indices(data_chunks,2));
+%         %Store it here temporarily
+%         data_to_write_this_time = zeros(NUM_CHANNELS,data_chunk_length,'int16');
+%         %Skip over previously read data
+%         skip_amount = indices(data_chunks,1)*INT_16_SIZE-INT_16_SIZE;
+%         for ii = 1:NUM_CHANNELS
+%             current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
+%             %Don't read data that's already been read
+%             fseek(current_fid,skip_amount,'bof');
+%             data_to_write_this_time(ii,:) = fread(current_fid,data_chunk_length,'int16=>int16');
+%             fclose(current_fid);
+%         end
+%         %Write it to the binary file
+%         fwrite(writtenFileID,data_to_write_this_time,'int16');
+%         fprintf('\nSuccessfully saved %d percent of the data\n',round(data_chunks/height(indices)*100))
+% 
+%     end
+% 
+%     %Deal with the last bit of the data
+%     last_data_chunk_length = length(indices(end,1):indices(end,2));
+%     data_to_write_this_time = zeros(NUM_CHANNELS,last_data_chunk_length,'int16');
+%     skip_amount = indices(end,1)*INT_16_SIZE-INT_16_SIZE;
+%     for ii = 1:NUM_CHANNELS
+%         current_fid = fopen(string(in_file_path+"\amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"),'r');
+%         fseek(current_fid,skip_amount,'bof');
+%         data_to_write_this_time(ii,:) = fread(current_fid,last_data_chunk_length,'int16=>int16');
+%         fclose(current_fid);
+%     end
+%     fwrite(writtenFileID,data_to_write_this_time,'int16');
+%     fprintf('\nSuccessfully saved last of the data, processing complete\n')
+%     fclose(writtenFileID);
+% 
+% end
 
 delete(gcp('nocreate'))
 
