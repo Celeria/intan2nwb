@@ -5,7 +5,7 @@ Created on Wed Jun  7 13:46:32 2023
 @author: Patrick, translated from MATLAB by chatgpt-4
 """
 
-def process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name, chunk_size=9000000):
+def process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name):
     import numpy as np
     import os
 
@@ -16,4 +16,5 @@ def process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, fi
             data_to_write[ii, :] = np.fromfile(current_fid, dtype=np.int16, count=num_samples)
             
     with open(file_name, 'wb') as writtenFileID:
-        writtenFileID.write(data_to_write.tobytes('F'))
+        data_to_write = np.reshape(data_to_write, data_to_write.shape, order='F')
+        writtenFileID.write(data_to_write.tobytes())
