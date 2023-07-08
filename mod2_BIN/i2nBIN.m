@@ -39,8 +39,8 @@ num_samples = recdev.num_samples;
 write_binary_mod = py.importlib.import_module('process_binary_data');
 
 % Call the Python function
-fprintf('\nTrying python version of the process')
-write_binary_mod.process_binary_data(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
+fprintf('\nTrying python version of the process\n')
+write_binary_mod.process_binary_data(py.int(NUM_CHANNELS), py.int(num_samples), py.str(in_file_path), py.str(port_letter), py.str(file_name));
 
 % if(slice_size > num_samples)
 %     %Everything fits in memory
