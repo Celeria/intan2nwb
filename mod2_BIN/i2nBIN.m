@@ -35,9 +35,13 @@ end
 NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_letter));
 num_samples = recdev.num_samples;
 
+mex mergeBinaryFiles.cpp
+mergeBinaryFiles(in_file_path, port_letter, NUM_CHANNELS, num_samples, file_name);
+
+
 % Call the Python function
-fprintf('\nTrying python version of the process\n');
-py.process_binary_data.process_binary_files(py.int(NUM_CHANNELS), py.int(num_samples), py.str(in_file_path), py.str(port_letter), py.str(file_name));
+%fprintf('\nTrying python version of the process\n');
+%py.process_binary_data.process_binary_files(py.int(NUM_CHANNELS), py.int(num_samples), py.str(in_file_path), py.str(port_letter), py.str(file_name));
 
 % if(slice_size > num_samples)
 %     %Everything fits in memory
@@ -48,15 +52,15 @@ py.process_binary_data.process_binary_files(py.int(NUM_CHANNELS), py.int(num_sam
 %         data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
 %         fclose(current_fid);
 %     end
-% 
+%
 %     fprintf('\nSaving binary data file...\n')
 %     writtenFileID = fopen(file_name,'w');
 %     fwrite(writtenFileID,data_to_write,'int16');
 %     fclose(writtenFileID);
-% 
+%
 % else
 %     fprintf('\nData won''t fit in memory, optimizing....\n')
-% 
+%
 %     %Can't fit it all in memory, something tricker needs to happen
 %     %The structure that's explains where to start reading data each time
 %     indices = nan(1000000,2);
@@ -79,12 +83,12 @@ py.process_binary_data.process_binary_files(py.int(NUM_CHANNELS), py.int(num_sam
 %     %The array was arbitrarily large just in case, but this trims it to the
 %     %exact size necessary
 %     indices = rmmissing(indices);
-% 
+%
 %     %Break the files into different time blocks, size dependant on how much
 %     %system RAM you have available, the more, the faster
 %     writtenFileID = fopen(file_name,'w');
 %     for data_chunks = 1:height(indices)-1
-% 
+%
 %         %How much data can be fit into memory at once
 %         data_chunk_length = length(indices(data_chunks,1):indices(data_chunks,2));
 %         %Store it here temporarily
@@ -101,9 +105,9 @@ py.process_binary_data.process_binary_files(py.int(NUM_CHANNELS), py.int(num_sam
 %         %Write it to the binary file
 %         fwrite(writtenFileID,data_to_write_this_time,'int16');
 %         fprintf('\nSuccessfully saved %d percent of the data\n',round(data_chunks/height(indices)*100))
-% 
+%
 %     end
-% 
+%
 %     %Deal with the last bit of the data
 %     last_data_chunk_length = length(indices(end,1):indices(end,2));
 %     data_to_write_this_time = zeros(NUM_CHANNELS,last_data_chunk_length,'int16');
@@ -117,7 +121,7 @@ py.process_binary_data.process_binary_files(py.int(NUM_CHANNELS), py.int(num_sam
 %     fwrite(writtenFileID,data_to_write_this_time,'int16');
 %     fprintf('\nSuccessfully saved last of the data, processing complete\n')
 %     fclose(writtenFileID);
-% 
+%
 % end
 
 delete(gcp('nocreate'))
