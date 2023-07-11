@@ -13,33 +13,12 @@
 #endif
 
 void mergeBinaryFiles(int NUM_CHANNELS, int num_samples, std::string in_file_path, char port_letter, std::string file_name) {
-    // Prepare a large buffer to hold all the data in the desired format
-    std::vector<int16_t> buffer(num_samples * NUM_CHANNELS);
+        // Define the size of the chunks to read/write at a time
+    const int CHUNK_SIZE = 10000; // Adjust this value as needed to fit in your memory
 
-    // Read all channels data into the buffer
-    for (int ii = 0; ii < NUM_CHANNELS; ii++) {
-        std::stringstream ss;
-        ss << in_file_path << PATH_SEP << "amp-" << static_cast<char>(std::toupper(port_letter)) << "-" << std::setw(3) << std::setfill('0') << ii << ".dat";
+    // Prepare a large buffer to hold a chunk of the data in the desired format
+    std::vector<int16_t> buffer(NUM_CHANNELS * CHUNK_SIZE);
 
-        std::ifstream current_file(ss.str(), std::ios::binary | std::ios::in);
-
-        if (!current_file.is_open()) {
-            mexPrintf("Failed to open file: %s\n", ss.str().c_str());
-            mexErrMsgIdAndTxt("mergeBinaryFiles:fileError", "Could not open input file.");
-        }
-
-        // Temporarily store data of the current file
-        std::vector<int16_t> file_data(num_samples);
-        current_file.read(reinterpret_cast<char*>(file_data.data()), sizeof(int16_t) * num_samples);
-        current_file.close();
-
-        // Write the data of the current file into the correct locations in the buffer
-        for (int jj = 0; jj < num_samples; jj++) {
-            buffer[jj * NUM_CHANNELS + ii] = file_data[jj];
-        }
-    }
-
-    // Write the buffer to the output file in one go
     std::ofstream out_file(file_name, std::ios::binary | std::ios::out);
 
     if (!out_file.is_open()) {
@@ -47,7 +26,44 @@ void mergeBinaryFiles(int NUM_CHANNELS, int num_samples, std::string in_file_pat
         mexErrMsgIdAndTxt("mergeBinaryFiles:fileError", "Could not open output file.");
     }
 
-    out_file.write(reinterpret_cast<const char*>(buffer.data()), sizeof(int16_t) * buffer.size());
+    // We need to keep track of the file streams to read from them in chunks
+    std::vector<std::ifstream> files(NUM_CHANNELS);
+
+    // Open all the input files
+    for (int ii = 0; ii < NUM_CHANNELS; ii++) {
+        std::stringstream ss;
+        ss << in_file_path << PATH_SEP << "amp-" << static_cast<char>(std::toupper(port_letter)) << "-" << std::setw(3) << std::setfill('0') << ii << ".dat";
+        files[ii].open(ss.str(), std::ios::binary | std::ios::in);
+
+        if (!files[ii].is_open()) {
+            mexPrintf("Failed to open file: %s\n", ss.str().c_str());
+            mexErrMsgIdAndTxt("mergeBinaryFiles:fileError", "Could not open input file.");
+        }
+    }
+
+    // Process the data in chunks
+    for (int chunk_start = 0; chunk_start < num_samples; chunk_start += CHUNK_SIZE) {
+        // Calculate the size of the current chunk
+        int chunk_size = std::min(CHUNK_SIZE, num_samples - chunk_start);
+
+        // Read a chunk from each file and put it into the correct locations in the buffer
+        for (int ii = 0; ii < NUM_CHANNELS; ii++) {
+            std::vector<int16_t> file_chunk(chunk_size);
+            files[ii].read(reinterpret_cast<char*>(file_chunk.data()), sizeof(int16_t) * chunk_size);
+
+            for (int jj = 0; jj < chunk_size; jj++) {
+                buffer[jj * NUM_CHANNELS + ii] = file_chunk[jj];
+            }
+        }
+
+        // Write the buffer to the output file
+        out_file.write(reinterpret_cast<const char*>(buffer.data()), sizeof(int16_t) * NUM_CHANNELS * chunk_size);
+    }
+
+    // Close all the input files
+    for (int ii = 0; ii < NUM_CHANNELS; ii++) {
+        files[ii].close();
+    }
 
     out_file.close();
 }
