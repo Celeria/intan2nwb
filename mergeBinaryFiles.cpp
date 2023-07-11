@@ -21,8 +21,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
     std::string file_name(mxArrayToString(prhs[4]));
 
     // Container to hold all data
+    std::vector<std::vector<int16_t>> data_to_write;
     try {
-        std::vector<std::vector<int16_t>> data_to_write(num_channels, std::vector<int16_t>(num_samples, 0));
+        data_to_write.resize(num_channels, std::vector<int16_t>(num_samples, 0));
     } catch (std::bad_alloc& ba) {
         mexErrMsgTxt("Memory allocation failed.");
     }
