@@ -1,7 +1,5 @@
 function probe_data = readIntanHeader(folder_path)
 
-parpool(6);
-
 %This rhd file contains information about the probe
 info_fid = fopen(folder_path + "\info.rhd");
 
@@ -335,7 +333,7 @@ end
 %Board ADC
 %Same rate as the amplifier data
 board_adc_data = zeros(num_board_adc_channels,num_samples_total,'single');
-parfor iadc = 1:num_board_adc_channels
+parfor (iadc = 1:num_board_adc_channels,6)
     current_fid = fopen(folder_path + "\board-" + board_adc_channels(iadc).native_channel_name + ".dat");
     if (board_mode == 0)
         board_adc_data(iadc,:) = fread(current_fid,num_samples_total,'uint16') * 0.000050354;
@@ -348,7 +346,7 @@ end
 %Board digital input data
 %Same rate as the amplifier
 board_dig_in_data = zeros(num_board_dig_in_channels,num_samples_total,'logical');
-parfor idin = 1:num_board_dig_in_channels
+parfor (idin = 1:num_board_dig_in_channels,6)
     current_fid = fopen(folder_path + "\board-" + board_dig_in_channels(idin).native_channel_name + ".dat");
     board_dig_in_data(idin,:) = fread(current_fid,num_samples_total,'uint16');
     fclose(current_fid);
@@ -357,7 +355,7 @@ end
 %Board digital output data
 %Same rate as the amplifier
 board_dig_out_data = zeros(num_board_dig_out_channels,num_samples_total,'logical');
-parfor ido = 1:num_board_dig_out_channels
+parfor (ido = 1:num_board_dig_out_channels,6)
     current_fid = fopen(folder_path + "\board-" + board_dig_out_channels(ido).native_channel_name + ".dat");
     board_dig_out_data(ido,:) = fread(current_fid,num_samples_total,'uint16');
     fclose(current_fid);
@@ -394,7 +392,5 @@ probe_data.amplifier_channels = amplifier_channels;
 probe_data.spike_triggers = spike_triggers;
 
 probe_data.time_stamp = time_stamp;
-
-delete(gcp('nocreate'))
 
 end
