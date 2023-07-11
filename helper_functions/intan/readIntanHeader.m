@@ -1,5 +1,7 @@
 function probe_data = readIntanHeader(folder_path)
 
+parpool(6);
+
 %This rhd file contains information about the probe
 info_fid = fopen(folder_path + "\info.rhd");
 
@@ -392,5 +394,7 @@ probe_data.amplifier_channels = amplifier_channels;
 probe_data.spike_triggers = spike_triggers;
 
 probe_data.time_stamp = time_stamp;
+
+delete(gcp('nocreate'))
 
 end
