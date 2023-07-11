@@ -35,6 +35,10 @@ end
 NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_letter));
 num_samples = recdev.num_samples;
 
+mex mergeBinaryFiles.cpp
+fprintf('\nRunning mex binary conversion function.\n');
+mergeBinaryFiles(NUM_CHANNELS, num_samples, char(fullfile(in_file_path)), port_letter, char(fullfile(file_name)));
+
 % fprintf('\nReading intan data files....\n')
 % data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
 % parfor ii = 1:NUM_CHANNELS
@@ -47,10 +51,6 @@ num_samples = recdev.num_samples;
 % writtenFileID = fopen(file_name,'w');
 % fwrite(writtenFileID,data_to_write,'int16');
 % fclose(writtenFileID);
-
-
-mex mergeBinaryFiles.cpp
-mergeBinaryFiles(in_file_path, port_letter, NUM_CHANNELS, num_samples, file_name);
 
 
 % Call the Python function
