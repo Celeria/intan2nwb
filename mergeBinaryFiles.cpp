@@ -1,76 +1,100 @@
 #include "mex.h"
-#include <iostream>
+#include "matrix.h"
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iomanip>
 
-void mexFunction(int nlhs, mxArray *plhs[],
-                 int nrhs, const mxArray *prhs[])
-{
-    // Check for proper number of input and output arguments
-    if(nrhs != 5)
-        mexErrMsgTxt("Five input arguments required.");
-    if(nlhs > 0)
-        mexErrMsgTxt("No output arguments.");
+#ifdef _WIN32
+    const char PATH_SEP = '\\';
+#else
+    const char PATH_SEP = '/';
+#endif
 
-    // Get the inputs from MATLAB
-    size_t num_channels = mxGetScalar(prhs[0]);
-    size_t num_samples = mxGetScalar(prhs[1]);
-    std::string in_file_path(mxArrayToString(prhs[2]));
-    std::string port_letter(mxArrayToString(prhs[3]));
-    std::string file_name(mxArrayToString(prhs[4]));
+void mergeBinaryFiles(int NUM_CHANNELS, int num_samples, std::string in_file_path, char port_letter, std::string file_name) {
+    // Prepare a large buffer to hold all the data in the desired format
+    std::vector<int16_t> buffer(num_samples * NUM_CHANNELS);
 
-    // Container to hold all data
-    std::vector<std::vector<int16_t>> data_to_write;
-    try {
-        data_to_write.resize(num_channels, std::vector<int16_t>(num_samples, 0));
-    } catch (std::bad_alloc& ba) {
-        mexErrMsgTxt("Memory allocation failed.");
-    }
-    std::ifstream current_fid;
-    std::string in_file_name;
+    // Read all channels data into the buffer
+    for (int ii = 0; ii < NUM_CHANNELS; ii++) {
+        std::stringstream ss;
+        ss << in_file_path << PATH_SEP << "amp-" << static_cast<char>(std::toupper(port_letter)) << "-" << std::setw(3) << std::setfill('0') << ii << ".dat";
 
-    for(int ii = 1; ii <= num_channels; ii++) {
-        in_file_name = in_file_path + "amp-" + std::string(1, toupper(port_letter[0])) + "-" + std::to_string(ii-1) + ".dat";
-        current_fid.open(in_file_name, std::ios::binary);
+        std::ifstream current_file(ss.str(), std::ios::binary | std::ios::in);
 
-        // Check if file opened successfully
-        if(!current_fid) {
-            mexErrMsgIdAndTxt("MATLAB:fileOpenError",
-                              ("Unable to open file: " + in_file_name).c_str());
+        if (!current_file.is_open()) {
+            mexPrintf("Failed to open file: %s\n", ss.str().c_str());
+            mexErrMsgIdAndTxt("mergeBinaryFiles:fileError", "Could not open input file.");
         }
 
-        // Read binary data
-        current_fid.read((char*)&data_to_write[ii - 1][0], num_samples * sizeof(int16_t));
-        
-        // Check if reading was successful
-        if(!current_fid) {
-            mexErrMsgIdAndTxt("MATLAB:fileReadError",
-                              ("Error reading file: " + in_file_name).c_str());
-        }
+        // Temporarily store data of the current file
+        std::vector<int16_t> file_data(num_samples);
+        current_file.read(reinterpret_cast<char*>(file_data.data()), sizeof(int16_t) * num_samples);
+        current_file.close();
 
-        current_fid.close();
-    }
-
-    // Transpose and write to binary file
-    std::ofstream written_fid(file_name, std::ios::binary);
-
-    // Check if file opened successfully
-    if(!written_fid) {
-        mexErrMsgIdAndTxt("MATLAB:fileOpenError",
-                          ("Unable to open file: " + file_name).c_str());
-    }
-
-    for(int jj = 0; jj < num_samples; jj++) {
-        for(int ii = 0; ii < num_channels; ii++) {
-            written_fid.write((char*)&data_to_write[ii][jj], sizeof(int16_t)); // Note the transpose operation here
-
-            // Check if writing was successful
-            if(!written_fid) {
-                mexErrMsgIdAndTxt("MATLAB:fileWriteError",
-                                  ("Error writing file: " + file_name).c_str());
-            }
+        // Write the data of the current file into the correct locations in the buffer
+        for (int jj = 0; jj < num_samples; jj++) {
+            buffer[jj * NUM_CHANNELS + ii] = file_data[jj];
         }
     }
-    written_fid.close();
+
+    // Write the buffer to the output file in one go
+    std::ofstream out_file(file_name, std::ios::binary | std::ios::out);
+
+    if (!out_file.is_open()) {
+        mexPrintf("Failed to open file: %s\n", file_name.c_str());
+        mexErrMsgIdAndTxt("mergeBinaryFiles:fileError", "Could not open output file.");
+    }
+
+    out_file.write(reinterpret_cast<const char*>(buffer.data()), sizeof(int16_t) * buffer.size());
+
+    out_file.close();
+}
+
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+    if (nrhs != 5) {
+        mexErrMsgIdAndTxt("mergeBinaryFiles:invalidNumInputs", "Five inputs required.");
+    }
+
+    if (!mxIsDouble(prhs[0]) || mxIsComplex(prhs[0]) || mxGetNumberOfElements(prhs[0]) != 1) {
+        mexErrMsgIdAndTxt("processBinaryFiles:inputNotScalar", "Input 1 must be a scalar.");
+    }
+
+    if (!mxIsDouble(prhs[1]) || mxIsComplex(prhs[1]) || mxGetNumberOfElements(prhs[1]) != 1) {
+        mexErrMsgIdAndTxt("processBinaryFiles:inputNotScalar", "Input 2 must be a scalar.");
+    }
+
+    if (!mxIsChar(prhs[2]) || mxGetNumberOfElements(prhs[2]) < 1) {
+        mexErrMsgIdAndTxt("processBinaryFiles:inputNotString", "Input 3 must be a string.");
+    }
+
+    if (!mxIsChar(prhs[3]) || mxGetNumberOfElements(prhs[3]) != 1) {
+        mexErrMsgIdAndTxt("processBinaryFiles:inputNotChar", "Input 4 must be a single character.");
+    }
+
+    if (!mxIsChar(prhs[4]) || mxGetNumberOfElements(prhs[4]) < 1) {
+        mexErrMsgIdAndTxt("processBinaryFiles:inputNotString", "Input 5 must be a string.");
+    }
+
+    int NUM_CHANNELS = static_cast<int>(mxGetScalar(prhs[0]));
+    int num_samples = static_cast<int>(mxGetScalar(prhs[1]));
+    
+    char* in_file_path_temp = mxArrayToString(prhs[2]);
+    if (in_file_path_temp == nullptr) {
+        mexErrMsgIdAndTxt("processBinaryFiles:conversionFailed", "Conversion to string failed for input 3.");
+    }
+    std::string in_file_path = std::string(in_file_path_temp);
+    mxFree(in_file_path_temp);
+    
+    char port_letter = static_cast<char>(mxGetScalar(prhs[3]));
+    
+    char* file_name_temp = mxArrayToString(prhs[4]);
+    if (file_name_temp == nullptr) {
+        mexErrMsgIdAndTxt("processBinaryFiles:conversionFailed", "Conversion to string failed for input 5.");
+    }
+    std::string file_name = std::string(file_name_temp);
+    mxFree(file_name_temp);
+    
+    mergeBinaryFiles(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
 }
