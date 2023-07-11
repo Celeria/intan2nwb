@@ -35,6 +35,20 @@ end
 NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_letter));
 num_samples = recdev.num_samples;
 
+% fprintf('\nReading intan data files....\n')
+% data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
+% parfor ii = 1:NUM_CHANNELS
+%     current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
+%     data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
+%     fclose(current_fid);
+% end
+% 
+% fprintf('\nSaving binary data file...\n')
+% writtenFileID = fopen(file_name,'w');
+% fwrite(writtenFileID,data_to_write,'int16');
+% fclose(writtenFileID);
+
+
 mex mergeBinaryFiles.cpp
 mergeBinaryFiles(in_file_path, port_letter, NUM_CHANNELS, num_samples, file_name);
 
@@ -45,18 +59,18 @@ mergeBinaryFiles(in_file_path, port_letter, NUM_CHANNELS, num_samples, file_name
 
 % if(slice_size > num_samples)
 %     %Everything fits in memory
-%     fprintf('\nReading intan data files....\n')
-%     data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
-%     parfor ii = 1:NUM_CHANNELS
-%         current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
-%         data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
-%         fclose(current_fid);
-%     end
-%
-%     fprintf('\nSaving binary data file...\n')
-%     writtenFileID = fopen(file_name,'w');
-%     fwrite(writtenFileID,data_to_write,'int16');
-%     fclose(writtenFileID);
+%         fprintf('\nReading intan data files....\n')
+%         data_to_write = zeros(NUM_CHANNELS,num_samples,'int16');
+%         parfor ii = 1:NUM_CHANNELS
+%             current_fid = fopen(string(in_file_path+"amp-" + upper(port_letter) + "-" + sprintf('%03d',ii-1) + ".dat"));
+%             data_to_write(ii,:) = fread(current_fid,num_samples,'int16');
+%             fclose(current_fid);
+%         end
+%         
+%         fprintf('\nSaving binary data file...\n')
+%         writtenFileID = fopen(file_name,'w');
+%         fwrite(writtenFileID,data_to_write,'int16');
+%         fclose(writtenFileID);
 %
 % else
 %     fprintf('\nData won''t fit in memory, optimizing....\n')
