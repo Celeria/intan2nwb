@@ -3,6 +3,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <iomanip>
+#include <sstream>
 
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
@@ -20,57 +22,76 @@ void mexFunction(int nlhs, mxArray *plhs[],
     std::string port_letter(mxArrayToString(prhs[3]));
     std::string file_name(mxArrayToString(prhs[4]));
 
-    // Container to hold all data
-    std::vector<std::vector<int16_t>> data_to_write;
+    // Determine size of the chunk to process at a time based on available system memory
+    size_t chunk_size = 100; // initial chunk size
     try {
-        data_to_write.resize(num_channels, std::vector<int16_t>(num_samples, 0));
-    } catch (std::bad_alloc& ba) {
-        mexErrMsgTxt("Memory allocation failed.");
+        std::vector<std::vector<int16_t>> test(chunk_size, std::vector<int16_t>(num_samples, 0));
+    } catch(std::bad_alloc&) {
+        chunk_size = num_channels / 10; // adjust chunk_size based on your system's memory capacity
     }
+
+    // Container to hold the chunk of data
+    std::vector<std::vector<int16_t>> chunk_data(chunk_size, std::vector<int16_t>(num_samples, 0));
     std::ifstream current_fid;
     std::string in_file_name;
+    std::stringstream ss; // Create a stringstream object for string formatting
 
-    for(int ii = 1; ii <= num_channels; ii++) {
-        in_file_name = in_file_path + "amp-" + std::string(1, toupper(port_letter[0])) + "-" + std::to_string(ii-1) + ".dat";
-        current_fid.open(in_file_name, std::ios::binary);
-
-        // Check if file opened successfully
-        if(!current_fid) {
-            mexErrMsgIdAndTxt("MATLAB:fileOpenError",
-                              ("Unable to open file: " + in_file_name).c_str());
-        }
-
-        // Read binary data
-        current_fid.read((char*)&data_to_write[ii - 1][0], num_samples * sizeof(int16_t));
-        
-        // Check if reading was successful
-        if(!current_fid) {
-            mexErrMsgIdAndTxt("MATLAB:fileReadError",
-                              ("Error reading file: " + in_file_name).c_str());
-        }
-
-        current_fid.close();
-    }
-
-    // Transpose and write to binary file
+    // Open output file
     std::ofstream written_fid(file_name, std::ios::binary);
 
     // Check if file opened successfully
-    if(!written_fid) {
-        mexErrMsgIdAndTxt("MATLAB:fileOpenError",
-                          ("Unable to open file: " + file_name).c_str());
+    if (!written_fid.is_open()) {
+        mexErrMsgTxt(("Could not open file for writing: " + file_name).c_str());
     }
 
-    for(int jj = 0; jj < num_samples; jj++) {
-        for(int ii = 0; ii < num_channels; ii++) {
-            written_fid.write((char*)&data_to_write[ii][jj], sizeof(int16_t)); // Note the transpose operation here
+    for(size_t chunk_start = 1; chunk_start <= num_channels; chunk_start += chunk_size) {
+        size_t current_chunk_size = std::min(chunk_size, num_channels - chunk_start + 1);
 
-            // Check if writing was successful
-            if(!written_fid) {
-                mexErrMsgIdAndTxt("MATLAB:fileWriteError",
-                                  ("Error writing file: " + file_name).c_str());
+        for(size_t ii = chunk_start; ii < chunk_start + current_chunk_size; ii++) {
+            ss.str(std::string()); // Clear the stringstream
+            ss << std::setw(3) << std::setfill('0') << ii-1; // Format the string
+            char upper_port_letter = toupper(port_letter[0]);
+            in_file_name = in_file_path + "amp-" + upper_port_letter + "-" + ss.str() + ".dat";
+            current_fid.open(in_file_name, std::ios::binary);
+
+            // Check if file opened successfully
+            if (!current_fid.is_open()) {
+                written_fid.close();
+                mexErrMsgTxt(("Could not open file: " + in_file_name).c_str());
+            }
+
+            // Read binary data
+            current_fid.read((char*)&chunk_data[ii - chunk_start][0], num_samples * sizeof(int16_t));
+
+            // Check if read operation was successful
+            if (current_fid.fail()) {
+                current_fid.close();
+                written_fid.close();
+                mexErrMsgTxt(("Failed to read from file: " + in_file_name).c_str());
+            }
+            current_fid.close();
+        }
+
+        // Transpose chunk of data in memory
+        std::vector<int16_t> chunk_data_transposed(current_chunk_size * num_samples);
+        for (size_t i = 0; i < current_chunk_size; i++)
+        {
+            for (size_t j = 0; j < num_samples; j++)
+            {
+                // Adjust the calculation for index in transposed data
+                chunk_data_transposed[j * num_channels + (chunk_start - 1 + i)] = chunk_data[i][j];
             }
         }
+
+        // Write chunk of data
+        written_fid.write((char*)chunk_data_transposed.data(), chunk_data_transposed.size() * sizeof(int16_t));
+
+        // Check if write operation was successful
+        if (written_fid.fail()) {
+            written_fid.close();
+            mexErrMsgTxt(("Failed to write to file: " + file_name).c_str());
+        }
     }
+    
     written_fid.close();
 }

@@ -50,7 +50,7 @@ num_samples = recdev.num_samples;
 
 
 mex mergeBinaryFiles.cpp
-mergeBinaryFiles(in_file_path, port_letter, NUM_CHANNELS, num_samples, file_name);
+mergeBinaryFiles(NUM_CHANNELS, num_samples, in_file_path, port_letter, file_name);
 
 
 % Call the Python function
