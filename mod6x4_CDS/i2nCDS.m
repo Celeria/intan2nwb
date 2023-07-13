@@ -32,8 +32,8 @@ end
 fclose(test_fid);
 clear test_size
 
-pvar_amp_ch = cat(1,{recdev.amplifier_channels.native_channel_name});
-pvar_amp_ch = pvar_amp_ch(cellfun(@contains, pvar_amp_ch,  repmat({probe.port}, 1, numel(pvar_amp_ch))));
+% pvar_amp_ch = cat(1,{recdev.amplifier_channels.native_channel_name});
+% pvar_amp_ch = pvar_amp_ch(cellfun(@contains, pvar_amp_ch,  repmat({probe.port}, 1, numel(pvar_amp_ch))));
 pvar_ds_factor = probe.downsample_factor;
 
 in_file_path = recdev.in_file_path;
@@ -44,10 +44,12 @@ warning('off','all')
 
 if ~isempty(gcp('nocreate'));    delete(gcp);    end
 pool1 = parpool(workers);
+probe_letter = probe.port;
+
 parfor kk = 1:probe.num_channels
 
     % Open file and init data
-    current_fid             = fopen(in_file_path + "\amp-" + pvar_amp_ch{kk} + ".dat" , 'r');
+    current_fid             = fopen(in_file_path + "\amp-" + probe_letter + "-" + sprintf('%03d',kk-1) + ".dat" , 'r');
     current_data            = double(fread(current_fid, num_samples, 'int16')) .* 0.195;
 
     muae(kk,:)  = downsample(filtfilt(muae_power_bwb, muae_power_bwa, ...
