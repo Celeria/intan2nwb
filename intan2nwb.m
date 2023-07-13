@@ -21,8 +21,6 @@
 % 1. This version of the code requires having a google sheet with some
 % information pertaining to the recordings.
 
-%test git
-
 function intan2nwb(ID,IMAGE_TOKEN,varargin)
 %% Defaults - need to ammend
 keepers                         = {'NWB'};
