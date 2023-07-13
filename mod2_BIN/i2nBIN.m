@@ -32,7 +32,7 @@ if (exist(file_name,'file'))
     delete(file_name);
 end
 
-NUM_CHANNELS = sum(vertcat(recdev.amplifier_channels.port_prefix) == upper(port_letter));
+NUM_CHANNELS = probe.num_channels;
 num_samples = recdev.num_samples;
 
 mex mergeBinaryFiles.cpp
