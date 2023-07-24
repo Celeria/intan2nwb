@@ -1,4 +1,6 @@
-function nwb = i2nDIO(nwb, recdev)
+function [nwb,digital_failed] = i2nDIO(nwb, recdev)
+
+digital_failed = 0;
 
 for mm = 1 : numel(recdev.dio_map)
     if strcmp(recdev.dio_map{mm}.description, 'EVT')
@@ -63,6 +65,7 @@ for mm = 1 : numel(recdev.dio_map)
             try
                 event_data = identEvents(intan_code_values, intan_code_times);
             catch
+                digital_failed = 1;
                 disp('!!!!!COULD NOT DECODE EVENTS. CREATING PLACEHOLDER WITH DATA IN NWB FILE!!!!!')
                 event_data{1}.task = 'UNDECODABLE_PRESUMED_CODES';
                 event_data{1}.codes = intan_code_values;
