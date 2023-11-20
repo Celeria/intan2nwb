@@ -61,7 +61,7 @@ for mm = 1 : numel(recdev.dio_map)
             intan_code_values = digital_ordered(intan_code_times);
 
             intan_code_times = intan_code_times / recdev.sampling_rate;
-
+            
             try
                 event_data = identEvents(intan_code_values, intan_code_times);
             catch

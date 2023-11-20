@@ -303,7 +303,7 @@ for ii = to_proc
 
             end
 
-            % SPIKE SORTING
+            %SPIKE SORTING
             try
                 nwb = i2nSPK(pp, nwb, recdev{rd}, probe{probe_ctr+1});
 

@@ -37,7 +37,7 @@ for ii = 1 : numel(trial_start)
         contains(task_data.event_code_type(trial_start(ii):trial_end(ii)), '4') | ...
         contains(task_data.event_code_type(trial_start(ii):trial_end(ii)), '5')));
     
-    if numel(presentations) == 4
+    if numel(presentations) == 5
         complete_trial = 1;
         prez_seq = task_data.orientation(presentations+(trial_start(ii)-1))';
         task_data.seq_type(trial_start(ii):trial_end(ii)) = find(sum(seq_combos == prez_seq,2) == 4);
