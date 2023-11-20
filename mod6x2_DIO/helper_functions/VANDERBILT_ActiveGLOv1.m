@@ -37,6 +37,8 @@ for ii = 1 : numel(trial_start)
         contains(task_data.event_code_type(trial_start(ii):trial_end(ii)), '4') | ...
         contains(task_data.event_code_type(trial_start(ii):trial_end(ii)), '5')));
     
+    disp(numel(presentations));
+    
     if numel(presentations) == 5
         complete_trial = 1;
         prez_seq = task_data.orientation(presentations+(trial_start(ii)-1))';
